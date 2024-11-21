@@ -1,15 +1,14 @@
-import Image from "next/image";
-
 import classNames from "classnames/bind";
 import styles from "./Header.module.scss";
-import Link from "next/link";
-import { ModeToggle } from "@/components/ui/mode-toggle";
-
 const cx = classNames.bind(styles);
+
+import Link from "next/link";
+import Image from "next/image";
+import { ModeToggle } from "@/components/ui/mode-toggle";
 
 function Header() {
   return (
-    <div className={cx("container", "px-10", "py-5")}>
+    <div className={cx("container", "py-5")}>
       <div className={cx("wrapper")}>
         <Image
           className={cx("img")}
@@ -33,7 +32,7 @@ function Header() {
           </li>
         </ul>
       </div>
-      <div className={cx("fixed bottom-0 right-0 p-4")}>
+      <div className={cx("fixed top-0 right-0 p-4")}>
         <ModeToggle />
       </div>
     </div>

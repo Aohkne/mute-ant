@@ -1,0 +1,89 @@
+.wrapper {
+  margin: 80px 0;
+  .title {
+    font-size: 8rem;
+    font-weight: 700;
+  }
+
+  .subtitle {
+    height: 80px;
+    .text-auto {
+      font-size: 5rem;
+      font-weight: 700;
+    }
+  }
+
+  .description {
+    font-size: 2rem;
+    font-weight: 200;
+  }
+
+  .hero-action {
+    max-width: 200px;
+    padding: 10px 15px;
+    border-radius: 10px;
+    border: 2px solid transparent;
+    cursor: pointer;
+
+    &:hover {
+      border: 2px solid transparent;
+      background-clip: padding-box, border-box;
+      background-origin: border-box;
+      background-image: linear-gradient(var(--background), var(--background)),
+        linear-gradient(90deg, #d07e88 11.63%, #759bce 40.43%, #9b82cf 68%);
+
+      .hero-btn {
+        background: linear-gradient(
+          72.83deg,
+          #d07e88 11.63%,
+          #759bce 40.43%,
+          #d07e88 68.07%
+        );
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+
+      .hero-icon {
+        color: var(--red);
+      }
+    }
+
+    .hero-circle {
+      height: 12px;
+      width: 15px;
+      border-radius: 50%;
+      background-color: #a2e9c1;
+      animation: blink 1.5s linear infinite;
+    }
+
+    //Animation
+    @keyframes blink {
+      0% {
+        box-shadow: 0px 0px 1px #a2e9c1;
+      }
+
+      50% {
+        box-shadow: 0px 0px 10px #a2e9c1;
+      }
+
+      100% {
+        box-shadow: none;
+      }
+    }
+
+    .hero-btn {
+      font-size: 2rem;
+      font-weight: 600;
+      color: #fff;
+      background-color: transparent;
+      box-shadow: none;
+    }
+
+    .hero-icon {
+      font-size: 2rem;
+      font-weight: 600;
+      color: #fff;
+    }
+  }
+}
