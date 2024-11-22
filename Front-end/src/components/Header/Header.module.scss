@@ -1,4 +1,7 @@
+@import "../../styles/mixin.scss";
+
 .wrapper {
+  position: fixed;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -15,18 +18,43 @@
   transition: all 0.3s ease;
 
   &:hover {
-    width: 800px;
+    width: 750px;
     border-radius: 95px;
+
+    @include respond-above(md) {
+      width: 110px;
+      height: 500px;
+    }
+  }
+
+  @include respond-above(md) {
+    width: 75px;
+    height: 75px;
+    flex-direction: column;
   }
 }
 
 .nav {
-  // font-size: 2.5rem;
+  display: flex;
+
   .nav-item {
     a {
       font-size: 2rem;
       font-weight: 700;
       margin: 0 50px;
+
+      @include respond-above(md) {
+        display: block;
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin: 20px 0px;
+      }
     }
+  }
+
+  @include respond-above(md) {
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
   }
 }
