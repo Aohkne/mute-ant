@@ -1,8 +1,15 @@
+@import "../../../styles/mixin.scss";
+
 .wrapper {
   margin: 80px 0;
   .title {
     font-size: 8rem;
     font-weight: 700;
+
+    @include respond-above(md) {
+      font-size: 5rem;
+      font-weight: 600;
+    }
   }
 
   .subtitle {
@@ -10,12 +17,27 @@
     .text-auto {
       font-size: 5rem;
       font-weight: 700;
+
+      @include respond-above(md) {
+        font-size: 3.5rem;
+        font-weight: 600;
+      }
+    }
+
+    @include respond-above(md) {
+      height: 50px;
     }
   }
 
   .description {
+    width: 75%;
     font-size: 2rem;
     font-weight: 200;
+
+    @include respond-above(md) {
+      width: 100%;
+      font-size: 1.8rem;
+    }
   }
 
   .hero-action {

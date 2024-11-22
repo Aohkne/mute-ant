@@ -1,5 +1,5 @@
-import classNames from "classnames/bind";
 import styles from "./Header.module.scss";
+import classNames from "classnames/bind";
 const cx = classNames.bind(styles);
 
 import Link from "next/link";
@@ -17,7 +17,7 @@ function Header() {
           width={38}
           height={38}
         />
-        <ul className={cx("nav", "flex")}>
+        <ul className={cx("nav")}>
           <li className={cx("nav-item", "text-gradient-3")}>
             <Link href={"/"}>Home</Link>
           </li>

@@ -1,7 +1,7 @@
 "use client";
 
-import classNames from "classnames/bind";
 import styles from "./Hero.module.scss";
+import classNames from "classnames/bind";
 const cx = classNames.bind(styles);
 
 import { useEffect, useRef } from "react";
@@ -48,15 +48,7 @@ function Hero() {
         </div>
       </div>
 
-      <div
-        className={cx(
-          "description",
-          "text-description",
-          "w-3/4",
-          "mx-auto",
-          "my-8"
-        )}
-      >
+      <div className={cx("description", "text-description", "mx-auto", "my-8")}>
         Let&apos;s explore the world of sign language, where communication knows
         no bounds and every gesture tells a meaningful story, creating new
         connections between people.
