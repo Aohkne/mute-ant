@@ -9,8 +9,14 @@
   font-size: 62.5%;
 }
 
+@font-face {
+  font-family: "Poppins";
+  src: url("../app/fonts/Poppins-Black.ttf") format("truetype");
+  font-style: normal;
+}
+
 body {
-  font-family: "Poppins Black", Arial, Helvetica, sans-serif;
+  font-family: "Poppins", Arial, Helvetica, sans-serif;
 }
 
 /* Scroll bar */
@@ -58,13 +64,22 @@ html ::-webkit-scrollbar-track {
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
 
-    /* Page */
-    --title: #2f3a4a;
+    /* Color */
+    --black: #2f3a4a;
     --red: #d07e88;
     --blue: #759bce;
     --purple: #9b82cf;
+    --gray: #888888;
 
     /* Class */
+    .text-title {
+      color: var(--black);
+    }
+
+    .text-description {
+      color: var(--gray);
+    }
+
     .text-gradient-3 {
       background: linear-gradient(
         72.83deg,
@@ -75,6 +90,15 @@ html ::-webkit-scrollbar-track {
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
+    }
+
+    .bg-gradient-3 {
+      background: linear-gradient(
+        90deg,
+        #d07e88 11.63%,
+        #759bce 40.43%,
+        #9b82cf 68%
+      );
     }
   }
 
@@ -104,6 +128,19 @@ html ::-webkit-scrollbar-track {
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+
+    /* Color */
+    --white: #fffff;
+    --light: #d2d2d2;
+
+    /* Class */
+    .text-title {
+      color: var(--white);
+    }
+
+    .text-description {
+      color: var(--light);
+    }
   }
 }
 
