@@ -1,3 +1,5 @@
+"use client";
+
 import styles from "./Card.module.scss";
 import classNames from "classnames/bind";
 const cx = classNames.bind(styles);
@@ -7,12 +9,19 @@ import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-function Card() {
+interface CardProps {
+  id: number;
+  img: string;
+  title: string;
+  author: string;
+}
+
+function Card({ id, img, title, author }: CardProps) {
   return (
     <div className={cx("wrapper")}>
       <div className={cx("img")}>
         <Image
-          src="/images/blog/demo.png"
+          src={img}
           alt="blog-img"
           width={500}
           height={500}
@@ -22,14 +31,14 @@ function Card() {
       <div
         className={cx("content", "flex-conlumn", "text-left", "px-5", "py-3")}
       >
-        <div className={cx("title", "text-title")}>Blog name</div>
+        <div className={cx("title", "text-title")}>{title}</div>
         <div
           className={cx("description", "text-description", "flex-1", "my-5")}
         >
-          Author name
+          {author}
         </div>
         <div className={cx("action")}>
-          <Link href={"/assistant"}>
+          <Link href={`/blog/${id}`}>
             <div
               className={cx(
                 "action-container",
