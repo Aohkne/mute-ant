@@ -1,0 +1,18 @@
+@import "../../../styles/mixin.scss";
+
+.wrapper {
+  background-image: url("/images/blog/EllipseLeft.png"),
+    url("/images/blog/EllipseRight.png");
+  background-repeat: no-repeat;
+  background-position: bottom left, top right;
+
+  .title {
+    font-size: 3rem;
+    font-weight: 600;
+    margin-bottom: 50px;
+
+    @include respond-above(md) {
+      font-size: 2rem;
+    }
+  }
+}
