@@ -9,7 +9,7 @@ import { ModeToggle } from "@/components/ui/mode-toggle";
 function Header() {
   return (
     <div className={cx("container", "py-5")}>
-      <div className={cx("wrapper")}>
+      <div className={cx("wrapper", "z-10")}>
         <Image
           className={cx("img")}
           src="/images/ant.png"

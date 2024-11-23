@@ -1,0 +1,39 @@
+@import "../../../styles/mixin.scss";
+
+.wrapper {
+  margin: 100px 0;
+
+  .title {
+    font-size: 3rem;
+    font-weight: 600;
+    margin-bottom: 50px;
+
+    @include respond-above(md) {
+      font-size: 2rem;
+    }
+  }
+
+  //Accordion
+  .accordion {
+    border-color: var(--border-accordion);
+    .accordion-title {
+      font-size: 2rem;
+      font-weight: 500;
+
+      @include respond-above(md) {
+        font-size: 1.6rem;
+      }
+    }
+
+    .accordion-description {
+      text-align: left;
+      padding: 20px 0;
+      font-size: 1.6rem;
+      font-weight: 300;
+
+      @include respond-above(md) {
+        font-size: 1.3rem;
+      }
+    }
+  }
+}
