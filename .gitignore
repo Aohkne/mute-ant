@@ -1,3 +1,9 @@
+<<<<<<< HEAD
 Back-end/.venv
 .venv
 Back-end/venv_mediapipe/
+=======
+Back-end\.venv
+.venv
+Back-end\venv_mediapipe
+>>>>>>> 901bce3f96fbe5a0a8f63fb6f02645cbab998534
