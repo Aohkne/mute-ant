@@ -1,0 +1,15 @@
+@mixin respond-above($breakpoint) {
+  @if $breakpoint == md {
+    @media (max-width: 768px) {
+      @content;
+    }
+    //   } @else if $breakpoint == sm {
+    //     @media (min-width: 576px) {
+    //       @content;
+    //     }
+    //   } @else if $breakpoint == lg {
+    //     @media (min-width: 992px) {
+    //       @content;
+    //     }
+  }
+}

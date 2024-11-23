@@ -1,0 +1,60 @@
+@import "../../styles/mixin.scss";
+
+.wrapper {
+  position: fixed;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  padding: 8px 10px;
+  border: 2px solid transparent;
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+  background-clip: padding-box, border-box;
+  background-origin: border-box;
+  background-image: linear-gradient(var(--background), var(--background)),
+    linear-gradient(72.83deg, #d07e88 11.63%, #759bce 40.43%, #d07e88 68.07%);
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    width: 750px;
+    border-radius: 95px;
+
+    @include respond-above(md) {
+      width: 110px;
+      height: 500px;
+    }
+  }
+
+  @include respond-above(md) {
+    width: 75px;
+    height: 75px;
+    flex-direction: column;
+  }
+}
+
+.nav {
+  display: flex;
+
+  .nav-item {
+    a {
+      font-size: 2rem;
+      font-weight: 700;
+      margin: 0 50px;
+
+      @include respond-above(md) {
+        display: block;
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin: 20px 0px;
+      }
+    }
+  }
+
+  @include respond-above(md) {
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+  }
+}
