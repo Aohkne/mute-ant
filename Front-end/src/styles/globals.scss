@@ -26,7 +26,7 @@ html ::-webkit-scrollbar {
 }
 
 html ::-webkit-scrollbar-thumb {
-  background-color: #00000026;
+  background-color: var(--scroll-bar);
   border-radius: 4px;
 }
 
@@ -69,7 +69,13 @@ html ::-webkit-scrollbar-track {
     --red: #d07e88;
     --blue: #759bce;
     --purple: #9b82cf;
+    --purple-light: #f2ecff;
     --gray: #888888;
+
+    /*Variable*/
+    --border-accordion: #2f3a4a;
+    --scroll-bar: #00000026;
+    --tag-shadow: #00000040;
 
     /* Class */
     .text-title {
@@ -132,6 +138,11 @@ html ::-webkit-scrollbar-track {
     /* Color */
     --white: #fffff;
     --light: #d2d2d2;
+
+    /*Variable*/
+    --border-accordion: #d2d2d2;
+    --scroll-bar: #d2d2d2;
+    --tag-shadow: #fff;
 
     /* Class */
     .text-title {

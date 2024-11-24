@@ -1,0 +1,28 @@
+@import "../../../styles/mixin.scss";
+
+.wrapper {
+  margin: 50px 0;
+  .title {
+    font-size: 3rem;
+    font-weight: 600;
+    margin-bottom: 50px;
+
+    @include respond-above(md) {
+      font-size: 2rem;
+    }
+  }
+
+  .list {
+    position: relative;
+    margin: 5px 0;
+    width: 100%;
+    min-height: 100px;
+    overflow: hidden;
+    display: flex;
+
+    &:hover .item {
+      cursor: pointer;
+      animation-play-state: paused;
+    }
+  }
+}

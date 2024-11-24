@@ -2,9 +2,10 @@
 
 import styles from "./Blog.module.scss";
 import classNames from "classnames/bind";
+const cx = classNames.bind(styles);
+
 import { useEffect, useState } from "react";
 import Card from "@/components/Card/Card";
-const cx = classNames.bind(styles);
 
 interface Blog {
   id: number;
