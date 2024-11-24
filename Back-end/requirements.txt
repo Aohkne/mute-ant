@@ -1,0 +1,7 @@
+3.10.0
+
+py -3.10 -m venv venv_mediapipe
+
+.\venv_mediapipe\Scripts\activate
+
+pip install mediapipe opencv-python
