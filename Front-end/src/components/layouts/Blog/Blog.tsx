@@ -38,7 +38,7 @@ function Blog() {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className={cx("text-center")}>Loading...</div>;
   }
 
   return (
@@ -60,21 +60,22 @@ function Blog() {
           "mx-auto"
         )}
       >
-        {blogs.slice(0, 3).map((blog, index) => (
-          <div
-            key={blog.id}
-            className={
-              index === 2 ? cx("sm:hidden", "md:hidden", "lg:block") : ""
-            }
-          >
-            <Card
-              id={blog.id}
-              img={blog.img}
-              title={blog.title}
-              author={blog.author}
-            />
-          </div>
-        ))}
+        {Array.isArray(blogs) &&
+          blogs.slice(0, 3).map((blog, index) => (
+            <div
+              key={blog.id}
+              className={
+                index === 2 ? cx("sm:hidden", "md:hidden", "lg:block") : ""
+              }
+            >
+              <Card
+                id={blog.id}
+                img={blog.img}
+                title={blog.title}
+                author={blog.author}
+              />
+            </div>
+          ))}
       </div>
     </div>
   );

@@ -1,10 +1,7 @@
 import { MongoClient } from "mongodb";
 
 // Kết nối MongoDB
-const client = new MongoClient(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+const client = new MongoClient(process.env.MONGODB_URI);
 
 let cachedDb = null;
 
@@ -13,7 +10,12 @@ export const connectToDatabase = async () => {
     return cachedDb; // Trả về database đã kết nối sẵn
   }
 
-  const db = await client.connect();
-  cachedDb = db.db(); // Caching database instance
-  return cachedDb;
+  try {
+    const db = await client.connect();
+    cachedDb = db.db(); // Lưu trữ database instance
+    return cachedDb;
+  } catch (error) {
+    console.error("Kết nối MongoDB thất bại:", error);
+    throw new Error("Không thể kết nối đến MongoDB");
+  }
 };
