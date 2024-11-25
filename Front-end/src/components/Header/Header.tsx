@@ -18,17 +18,25 @@ function Header() {
           height={38}
         />
         <ul className={cx("nav")}>
-          <li className={cx("nav-item", "text-gradient-3")}>
-            <Link href={"/"}>Home</Link>
+          <li className={cx("nav-item")}>
+            <Link className={cx("text-gradient-3")} href={"/"}>
+              Home
+            </Link>
           </li>
-          <li className={cx("nav-item", "text-gradient-3")}>
-            <Link href={"/assistant"}>Assistant</Link>
+          <li className={cx("nav-item")}>
+            <Link className={cx("text-gradient-3")} href={"/assistant"}>
+              Assistant
+            </Link>
           </li>
-          <li className={cx("nav-item", "text-gradient-3")}>
-            <Link href={"/chat"}>Chat</Link>
+          <li className={cx("nav-item")}>
+            <Link className={cx("text-gradient-3")} href={"/chat"}>
+              Chat
+            </Link>
           </li>
-          <li className={cx("nav-item", "text-gradient-3")}>
-            <Link href={"/blog"}>Blog</Link>
+          <li className={cx("nav-item")}>
+            <Link className={cx("text-gradient-3")} href={"/blog"}>
+              Blog
+            </Link>
           </li>
         </ul>
       </div>

@@ -38,7 +38,7 @@ function Card({ id, img, title, author }: CardProps) {
           {author}
         </div>
         <div className={cx("action")}>
-          <Link href={`/blog/${id}`}>
+          <Link href={`/blog-detail/${id}`}>
             <div
               className={cx(
                 "action-container",

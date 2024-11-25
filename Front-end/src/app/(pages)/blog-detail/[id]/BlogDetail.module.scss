@@ -1,0 +1,70 @@
+@import "../../../../styles/mixin.scss";
+
+.wrapper {
+  .title {
+    margin: 60px 0 0;
+    font-size: 8rem;
+    font-weight: 600;
+
+    @include respond-above(lg) {
+      font-size: 6rem;
+      font-weight: 600;
+    }
+
+    @include respond-above(md) {
+      font-size: 4.5rem;
+      font-weight: 600;
+    }
+  }
+
+  .img {
+    margin: 20px 0;
+    img {
+      width: 100%;
+      height: auto;
+    }
+  }
+
+  .icon-list {
+    .icon {
+      font-size: 3rem;
+
+      span {
+        margin: 0 10px;
+        font-weight: 300;
+      }
+
+      & + .icon {
+        margin-left: 15px;
+      }
+    }
+  }
+
+  .content {
+    margin: 20px 0;
+    font-size: 1.8rem;
+    font-weight: 300;
+  }
+
+  .source {
+    font-weight: 400;
+    font-size: 1.8rem;
+
+    span {
+      display: inline-block;
+      margin-left: 10px;
+      color: var(--blue);
+      font-size: 1.8rem;
+      font-weight: 300;
+
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+  }
+  .back-btn {
+    font-size: 2rem;
+    padding: 15px 20px;
+    background-color: var(--blue);
+  }
+}

@@ -5,6 +5,8 @@ import classNames from "classnames/bind";
 const cx = classNames.bind(styles);
 
 import { useEffect, useState } from "react";
+import Header from "@/components/Header/Header";
+import Footer from "@/components/Footer/Footer";
 import Card from "@/components/Card/Card";
 
 interface Blog {
@@ -40,43 +42,42 @@ function Blog() {
   if (loading) {
     return <div className={cx("text-center")}>Loading...</div>;
   }
-
   return (
-    <div className={cx("wrapper", "text-center", "px-10", "py-5")}>
-      <div className={cx("title", "text-title")}>
-        Sharing tips, stories, and insights about sign language
+    <div>
+      <div className={cx("px-10")}>
+        <Header />
       </div>
 
-      <div
-        className={cx(
-          "grid",
-          "grid-cols-1",
-          "sm:grid-cols-2",
-          "md:grid-cols-2",
-          "lg:grid-cols-3",
-          "gap-4",
-          "md:w-3/4",
-          "lg:w-3/4",
-          "mx-auto"
-        )}
-      >
-        {Array.isArray(blogs) &&
-          blogs.slice(0, 3).map((blog, index) => (
-            <div
-              key={blog.id}
-              className={
-                index === 2 ? cx("sm:hidden", "md:hidden", "lg:block") : ""
-              }
-            >
-              <Card
-                id={blog.id}
-                img={blog.img}
-                title={blog.title}
-                author={blog.author}
-              />
-            </div>
-          ))}
+      <div className={cx("wrapper", "p-10")}>
+        <div className={cx("title", "my-5")}>
+          <div className={cx("text-gradient-3")}>BLOG</div>
+        </div>
+
+        <div
+          className={cx(
+            "grid",
+            "grid-cols-1",
+            "sm:grid-cols-2",
+            "md:grid-cols-2",
+            "lg:grid-cols-4",
+            "gap-4"
+          )}
+        >
+          {Array.isArray(blogs) &&
+            blogs.map((blog) => (
+              <div key={blog.id}>
+                <Card
+                  id={blog.id}
+                  img={blog.img}
+                  title={blog.title}
+                  author={blog.author}
+                />
+              </div>
+            ))}
+        </div>
       </div>
+
+      <Footer />
     </div>
   );
 }
