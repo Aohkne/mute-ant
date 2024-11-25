@@ -1,0 +1,23 @@
+@import "../../../styles/mixin.scss";
+
+.wrapper {
+  background-image: url("/images/blog/EllipseBottom.png"),
+    url("/images/blog/EllipseRight.png");
+  background-repeat: no-repeat;
+  background-position: 0 100%, top right;
+
+  .title {
+    display: inline-block;
+    font-size: 8rem;
+    font-weight: 600;
+
+    @include respond-above(md) {
+      display: flex;
+      justify-content: center;
+      font-weight: 600;
+    }
+  }
+  @include respond-above(md) {
+    background-position: top left, bottom right;
+  }
+}
