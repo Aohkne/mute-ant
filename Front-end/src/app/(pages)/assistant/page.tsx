@@ -3,6 +3,7 @@ import React from "react";
 import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer";
 import VideoStreaming from "./GestureRecognition/VideoStreaming";
+import Chatbot from "./Chat/Chatbot";
 import classNames from "classnames/bind";
 import styles from "./Assistant.module.scss";
 
@@ -18,8 +19,8 @@ export default function Assistant() {
       <main className={cx("content")}>
         <h1 className={cx("title")}>Hand Sign Recognition</h1>
         <VideoStreaming />
+        <Chatbot />
       </main>
-
       <Footer />
     </div>
   );
