@@ -1,0 +1,139 @@
+.video-streaming {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+
+    .stream-controls {
+        margin-bottom: 1.5rem;
+        display: flex;
+        justify-content: center;
+        font-size: 2rem;
+
+        button {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            color: white;
+            transition: background-color 0.2s;
+
+            &.streaming {
+                background-color: #ef4444;
+
+                &:hover {
+                    background-color: #dc2626;
+                }
+            }
+
+            &.not-streaming {
+                background-color: #d07e88;
+
+                &:hover {
+                    background-color: #9b82cf;
+                }
+            }
+
+            .icon {
+                width: 5rem;
+                height: 5rem;
+            }
+        }
+    }
+
+    .grid-container {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+
+        @media (min-width: 768px) {
+            grid-template-columns: 6fr 1fr;
+        }
+    }
+
+    .card {
+        border-radius: 0.5rem;
+        overflow: hidden;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        background-color: white;
+
+        &-header {
+            background-color: white;
+            padding: 1.25rem;
+
+            .card-title {
+                font-size: 1.25rem;
+                font-weight: 600;
+            }
+        }
+
+        &-content {
+            padding: 1.25rem;
+        }
+    }
+
+    .video-container {
+        aspect-ratio: 16 / 9;
+        background-color: #f3f4f6;
+        border-radius: 0.5rem;
+        overflow: hidden;
+        position: relative;
+
+        .camera-off {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #9ca3af;
+        }
+
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+
+            img {
+                object-fit: cover;
+            }
+        }
+    }
+
+    .debug-info {
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem;
+            background-color: #f9fafb;
+            border-radius: 0.25rem;
+            margin-bottom: 0.5rem;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+
+            .label {
+                font-weight: 500;
+            }
+
+            .value {
+                &.connected {
+                    color: #10b981;
+                }
+
+                &.disconnected {
+                    color: #ef4444;
+                }
+
+                &.url {
+                    color: #3b82f6;
+                }
+            }
+        }
+    }
+    .card-content{
+        color: #10b981;
+        font-size: 2.8rem;
+    }
+}

@@ -1,27 +1,26 @@
-import styles from "./Assistant.module.scss";
-import classNames from "classnames/bind";
-const cx = classNames.bind(styles);
-
+"use client";
+import React from "react";
 import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer";
+import VideoStreaming from "./GestureRecognition/VideoStreaming";
+import classNames from "classnames/bind";
+import styles from "./Assistant.module.scss";
 
-function Assistant() {
+const cx = classNames.bind(styles);
+
+export default function Assistant() {
   return (
-    <div>
-      <div className={cx("px-10")}>
+    <div className={cx("wrapper")}>
+      <div className={cx("header")}>
         <Header />
       </div>
 
-      <div className={cx("wrapper", "p-10")}>
-        <div className={cx("title", "my-5")}>
-          <div className={cx("text-gradient-3")}>Communication</div>
-        </div>
-        {/* Content */}
-      </div>
+      <main className={cx("content")}>
+        <h1 className={cx("title")}>Hand Sign Recognition</h1>
+        <VideoStreaming />
+      </main>
 
       <Footer />
     </div>
   );
 }
-
-export default Assistant;
