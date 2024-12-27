@@ -3,6 +3,4 @@ Back-end/.venv
 .venv
 Back-end/venv_mediapipe/
 # ignore model files
-Back-end/sign-lag-model/data.pickle
-Back-end/sign-lag-model/model.p
-Back-end/sign-lag-model/data/
+node_modules/
