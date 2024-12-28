@@ -10,6 +10,10 @@ import mediapipe as mp
 from flask import Flask, Response, jsonify
 from flask_cors import CORS
 
+from flask import Flask, request, jsonify
+from pymongo import MongoClient
+import datetime
+
 from utils.cvfpscalc import CvFpsCalc
 from model.keypoint_classifier.keypoint_classifier import KeyPointClassifier
 
@@ -17,6 +21,10 @@ datasetdir = "model/dataset/dataset 1"
 
 app = Flask(__name__)
 CORS(app)
+
+client = MongoClient("mongodb://localhost:27017")
+db = client["mute-ant"]
+chat_history_collection = db["chat_history"]
 
 def get_args():
     parser = argparse.ArgumentParser()
@@ -549,6 +557,20 @@ def video_feed():
 @app.route('/status')
 def status():
     return jsonify({"status": "running"})
+
+@app.route('/api/saveChat', methods=['POST'])
+def save_chat():
+    data = request.json
+    try:
+        # Add timestamps
+        data["createdAt"] = datetime.datetime.now()
+        data["updatedAt"] = datetime.datetime.now()
+
+        # Save to MongoDB
+        chat_history_collection.insert_one(data)
+        return jsonify({"message": "Chat history saved successfully!"}), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
