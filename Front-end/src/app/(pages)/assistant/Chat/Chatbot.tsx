@@ -82,11 +82,29 @@ const Chatbot: React.FC = () => {
             setLoading(false);
             setHistory((oldHistory) => {
                 const newHistory = oldHistory.slice(0, oldHistory.length - 1);
-                newHistory.push({
-                    role: "model",
-                    parts: text,
-                });
-                return newHistory;
+                const updatedHistory = [
+                    ...newHistory,
+                    { role: "model", parts: text },
+                ];
+
+                // Save chat history to MongoDB
+                fetch("http://127.0.0.1:5000/api/saveChat", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        userId: "exampleUserId123", // Replace with actual user ID
+                        messages: updatedHistory.map((item) => ({
+                            role: item.role,
+                            content: item.parts,
+                            timestamp: new Date(),
+                        })),
+                    }),
+                })
+                    .catch((error) => console.error("Failed to save chat history:", error));
+
+                return updatedHistory;
             });
         } catch (error) {
             setHistory((oldHistory) => {
@@ -101,6 +119,7 @@ const Chatbot: React.FC = () => {
             console.error(error);
         }
     }
+
 
     function handleKeyDown(e: React.KeyboardEvent) {
         if (e.key === "Enter") {
