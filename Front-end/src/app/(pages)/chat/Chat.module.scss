@@ -48,7 +48,7 @@
     display: flex;
     padding: 1.5rem 1rem;
     gap: 1rem;
-    color: #ff69b4;
+    color: #d07e88;
     font-size: 1.25rem;
 
     &:hover {
@@ -66,7 +66,7 @@
     height: 50px;
     border-radius: 50%;
     overflow: hidden;
-    border: 2px solid #ff69b4; // Pink border for avatars
+    border: 2px solid #d07e88; // Pink border for avatars
 }
 
 .avatar-image {
@@ -81,7 +81,7 @@
     line-height: 1.6;
     white-space: pre-wrap;
     overflow-wrap: break-word;
-    color: #ff69b4;
+    color: #d07e88;
     background-color: #454545; // Slightly lighter gray for message bubbles
     padding: 1rem;
     border-radius: 8px;
@@ -104,7 +104,7 @@
         padding: 0.2em 0.4em;
         border-radius: 3px;
         font-family: monospace;
-        color: #ff69b4;
+        color: #d07e88;
     }
 
     pre {
@@ -118,7 +118,7 @@
 }
 
 .model-bubble {
-    color: #ff69b4;
+    color: #d07e88;
 }
 
 .input-container {
@@ -144,10 +144,10 @@
     resize: none;
     outline: none;
     background-color: #3d3d3d; // Lighter gray for input
-    color: #ff69b4;
+    color: #d07e88;
 
     &:focus {
-        border-color: #ff69b4;
+        border-color: #d07e88;
         box-shadow: 0 0 0 2px rgba(255, 105, 180, 0.1);
     }
 
@@ -182,14 +182,14 @@
 .icon-small {
     width: 20px;
     height: 20px;
-    color: #ff69b4;
+    color: #d07e88;
 }
 
 .spinner {
     width: 20px;
     height: 20px;
     border: 2px solid #3d3d3d;
-    border-top-color: #ff69b4;
+    border-top-color: #d07e88;
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
