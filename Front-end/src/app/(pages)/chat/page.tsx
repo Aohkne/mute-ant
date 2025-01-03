@@ -1,11 +1,10 @@
-'use client';
+"use client";
 import React, { useState, useEffect, useRef } from "react";
 import { Send, Trash } from "lucide-react";
 import Markdown from "react-markdown";
 import classNames from "classnames/bind";
 import styles from "./Chat.module.scss";
 import Header from "@/components/Header/Header";
-import Footer from "@/components/Footer/Footer";
 import Image from "next/image";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
@@ -35,7 +34,8 @@ const Chatbot: React.FC = () => {
 
   useEffect(() => {
     if (messageContainerRef.current) {
-      messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
+      messageContainerRef.current.scrollTop =
+        messageContainerRef.current.scrollHeight;
     }
   }, [history]);
 
@@ -84,10 +84,7 @@ const Chatbot: React.FC = () => {
       setLoading(false);
       setHistory((oldHistory) => {
         const newHistory = oldHistory.slice(0, oldHistory.length - 1);
-        const updatedHistory = [
-          ...newHistory,
-          { role: "model", parts: text },
-        ];
+        const updatedHistory = [...newHistory, { role: "model", parts: text }];
 
         // Save chat history to MongoDB
         fetch("http://127.0.0.1:5000/api/saveChat", {
@@ -103,8 +100,9 @@ const Chatbot: React.FC = () => {
               timestamp: new Date(),
             })),
           }),
-        })
-          .catch((error) => console.error("Failed to save chat history:", error));
+        }).catch((error) =>
+          console.error("Failed to save chat history:", error)
+        );
 
         return updatedHistory;
       });
@@ -142,38 +140,39 @@ const Chatbot: React.FC = () => {
 
   return (
     <div className={cx("wrapper")}>
-      <div className={cx("header")}>
+      <div className={cx("px-10")}>
         <Header />
       </div>
 
-      <main className={cx("content")}>
+      <main className={cx("content", "py-10")}>
         <div className={cx("chat-container")}>
           <div className={cx("message-container")}>
-            <div
-              ref={messageContainerRef}
-              className={cx("message-container")}
-              style={{
-                maxHeight: "500px",
-                overflowY: "auto",
-                scrollBehavior: "smooth",
-              }}
-            ></div>
             {history.map((item, index) => (
               <div
                 key={index}
-                className={cx("chat-message", {
-                  "message-start": item.role === "model",
-                  "message-end": item.role !== "model",
-                })}
+                className={cx(
+                  "chat-message",
+                  {
+                    "message-start": item.role === "model",
+                    "message-end": item.role !== "model",
+                  },
+                  {
+                    user: item.role !== "model",
+                  }
+                )}
               >
                 <div className={cx("avatar-container")}>
-                  <div className={cx("avatar-wrapper")}>
+                  <div
+                    className={cx("avatar-wrapper", {
+                      user: item.role !== "model",
+                    })}
+                  >
                     <Image
                       alt={item.role === "model" ? "Gemini" : "User"}
                       src={
                         item.role === "model"
-                          ? "/images/author/LHK.png"
-                          : "/images/ant.png"
+                          ? "/images/ant.png"
+                          : "/images/author/LHK.png"
                       }
                       width={50}
                       height={50}
@@ -181,16 +180,24 @@ const Chatbot: React.FC = () => {
                     />
                   </div>
                 </div>
+
                 <div
                   className={cx("message-bubble", {
-                    "model-bubble": item.role === "model",
+                    user: item.role !== "model",
                   })}
                 >
-                  <Markdown>{item.parts}</Markdown>
+                  <div
+                    className={cx(
+                      item.role !== "model" ? "chat-text-user" : "chat-text-bot"
+                    )}
+                  >
+                    <Markdown>{item.parts}</Markdown>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
+
           <div className={cx("input-container")}>
             <button className={cx("reset-button")} onClick={reset}>
               <Trash className={cx("icon-small")} />
@@ -201,7 +208,7 @@ const Chatbot: React.FC = () => {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Start Chatting..."
-              className={cx("chat-input")}
+              className={cx("chat-input", "text-title")}
             />
             <button
               className={cx("send-button", {
@@ -219,7 +226,6 @@ const Chatbot: React.FC = () => {
           </div>
         </div>
       </main>
-      <Footer />
     </div>
   );
 };

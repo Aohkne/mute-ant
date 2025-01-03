@@ -5,6 +5,7 @@
 
   .header {
     padding: 0 10px;
+    margin: 0 0 45px;
   }
 
   .content {
@@ -12,10 +13,10 @@
     padding: 10px;
 
     .title {
-      font-size: 8rem;
+      font-size: 6rem;
       font-weight: 600;
       margin-bottom: 2rem;
-      text-align: center;
+      text-align: left;
 
       @include respond-above(md) {
         display: flex;
