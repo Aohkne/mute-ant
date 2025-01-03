@@ -1,90 +1,86 @@
 .video-streaming {
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 1rem;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
 
-    .stream-controls {
-        margin-bottom: 1.5rem;
-        display: flex;
-        justify-content: center;
+  .stream-controls {
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: center;
 
-        button {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            color: white;
-            transition: background-color 0.2s;
+    button {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 2rem;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      color: white;
+      z-index: 5;
 
-            &.streaming {
-                background-color: #ef4444;
+      &.streaming {
+        background-color: #ef4444;
 
-                &:hover {
-                    background-color: #dc2626;
-                }
-            }
-
-            &.not-streaming {
-                background-color: #d07e88;
-
-                &:hover {
-                    background-color: #9b82cf;
-                }
-            }
-
-            .icon {
-                width: 5rem;
-                height: 5rem;
-            }
+        &:hover {
+          background-color: #dc2626;
         }
+      }
+
+      &.not-streaming {
+        background-color: #d07e88;
+
+        &:hover {
+          background-color: #9b82cf;
+        }
+      }
+
+      .icon {
+        width: 5rem;
+        height: 5rem;
+      }
+    }
+  }
+
+  .card {
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    background-color: white;
+
+    &-header {
+      .card-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+      }
+    }
+  }
+
+  .video-container {
+    aspect-ratio: 16 / 9;
+    background-color: #f3f4f6;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    position: relative;
+    height: 100%;
+
+    .camera-off {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #9ca3af;
+      font-size: 10rem;
+      height: 100%;
     }
 
-    .card {
-        border-radius: 0.5rem;
-        overflow: hidden;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        background-color: white;
+    .video-wrapper {
+      width: 100%;
+      height: 100%;
 
-        &-header {
-
-            .card-title {
-                font-size: 1.25rem;
-                font-weight: 600;
-            }
-        }
-
-        &-content {
-            padding: 1.25rem;
-        }
+      img {
+        object-fit: cover;
+      }
     }
-
-    .video-container {
-        aspect-ratio: 16 / 9;
-        background-color: #f3f4f6;
-        border-radius: 0.5rem;
-        overflow: hidden;
-        position: relative;
-        height: 100%;
-
-        .camera-off {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            color: #9ca3af;
-            font-size: 10rem;
-            height: 100%; // Ensures vertical centering within the parent
-        }
-
-        .video-wrapper {
-            width: 100%;
-            height: 100%;
-
-            img {
-                object-fit: cover;
-            }
-        }
-    }
+  }
 }
