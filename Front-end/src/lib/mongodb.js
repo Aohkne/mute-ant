@@ -1,3 +1,4 @@
+//src/lib/mongodb.js
 import { MongoClient } from "mongodb";
 
 // Kết nối MongoDB
