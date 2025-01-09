@@ -73,7 +73,7 @@
 
     .hero-circle {
       height: 12px;
-      width: 15px;
+      width: 12px;
       border-radius: 50%;
       background-color: #a2e9c1;
       animation: blink 1.5s linear infinite;
@@ -97,6 +97,7 @@
     .hero-btn {
       font-size: 2rem;
       font-weight: 600;
+      margin: 0 5px;
       color: #fff;
       background-color: transparent;
       box-shadow: none;

@@ -16,7 +16,9 @@ export default function Assistant() {
       </div>
 
       <main className={cx("content")}>
-        <h1 className={cx("title")}>Hand Sign Recognition</h1>
+        <h1 className={cx("title", "text-gradient-3")}>
+          Hand Sign Recognition
+        </h1>
         <VideoStreaming />
       </main>
       <Footer />
