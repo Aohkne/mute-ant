@@ -54,7 +54,7 @@ function Hero() {
         connections between people.
       </div>
 
-      <Link href={"/assistant"}>
+      <Link href={"/login"}>
         <div
           className={cx(
             "hero-action",

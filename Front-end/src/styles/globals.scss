@@ -111,6 +111,13 @@ html ::-webkit-scrollbar-track {
       );
     }
 
+    .border-gradient-3 {
+      background-clip: padding-box, border-box;
+      background-origin: border-box;
+      background-image: linear-gradient(var(--background), var(--background)),
+        linear-gradient(90deg, #d07e88 11.63%, #759bce 40.43%, #9b82cf 68%);
+    }
+
     .chat-text-bot {
       color: var(--black);
     }
