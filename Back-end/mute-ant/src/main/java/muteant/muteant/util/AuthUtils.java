@@ -1,6 +1,8 @@
 package muteant.muteant.util;
 
 import lombok.RequiredArgsConstructor;
+import muteant.muteant.model.entity.AccountEntity;
+import muteant.muteant.repository.AccountRepository;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

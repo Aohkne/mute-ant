@@ -1,5 +1,6 @@
 package muteant.muteant.service.impl;
 
+import muteant.muteant.model.entity.AccountEntity;
 import muteant.muteant.repository.AccountRepository;
 import muteant.muteant.util.AuthUtils;
 import lombok.RequiredArgsConstructor;
