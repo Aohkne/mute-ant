@@ -1,0 +1,45 @@
+services:
+  mute-ant-postgres:
+    container_name: mute-ant_postgres
+    image: 'postgres:latest'
+    environment:
+      DB_NAME: ${DB_NAME}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DB_USERNAME}
+    ports:
+      - "5432:5432"
+    restart: always
+    networks:
+      mute-ant-networks:
+
+  mute-ant-pgadmin4:
+    container_name: mute-ant_pgadmin4
+    image: elestio/pgadmin:latest
+    restart: always
+    environment:
+      DB_NAME: ${DB_NAME}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+      PGADMIN_LISTEN_PORT: 5050
+    networks:
+      mute-ant-networks:
+    ports:
+      - "5050:5050"
+
+  mute-ant-redis:
+    container_name: mute-ant_redis
+    image: 'redis:latest'
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      mute-ant-networks:
+
+networks:
+  mute-ant-networks:
+    name: mute-ant_networks
