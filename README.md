@@ -1,5 +1,1 @@
-Trong FE npm install xong rồi tải thêm 2 cái này
-
-```
-npm install react-markdown @google/generative-ai
-```
+Mấy cái hướng dẫn chạy thì ở trong từng thư mục có README có sẵn, làm y chang từ trên xuống dưới là được
