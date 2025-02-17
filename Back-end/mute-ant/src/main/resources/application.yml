@@ -1,9 +1,9 @@
 spring:
   application:
-    name: muteant
+    name: mute-ant
   datasource:
-    username: ${DB_USERNAME:postgres}
-    password: ${DB_PASSWORD:12345}
+    username: ${DB_USERNAME:mute-ant}
+    password: ${DB_PASSWORD:mute-antpass}
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME}
   jpa:
     hibernate:

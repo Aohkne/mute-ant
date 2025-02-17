@@ -1,6 +1,8 @@
 package muteant.muteant.util;
 
 import lombok.RequiredArgsConstructor;
+import muteant.muteant.model.entity.AccountEntity;
+import muteant.muteant.repository.AccountRepository;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -30,10 +32,10 @@ public class AuthUtils {
     }
 
     public static Collection<GrantedAuthority> convertRoleToAuthority(AccountEntity account) {
-        if (account.getRole() == null || account.getRole().getRoleName() == null) {
+        if (account.getRole() == null) {
             return List.of();
         }
-        String role_name = account.getRole().getRoleName().toUpperCase();
+        String role_name = account.getRole().toUpperCase();
         return List.of(new SimpleGrantedAuthority("ROLE_" + role_name));
     }
 

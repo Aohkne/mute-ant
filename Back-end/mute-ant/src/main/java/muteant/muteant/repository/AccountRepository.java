@@ -1,10 +1,16 @@
 package muteant.muteant.repository;
 
-/**
- * muteant
- *
- * @author Lam Tan Phat
- * Date:2/16/2025
- */
-public interface AccountRepository {
+import muteant.muteant.model.entity.AccountEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+@Repository
+public interface AccountRepository extends BaseRepository<AccountEntity, Long>{
+    Optional<AccountEntity> findByUsername(String username);
+    Optional<AccountEntity> findByEmail(String email);
+    Optional<AccountEntity> findById(Long id);
+    Boolean existsByUsername(String username);
+    Boolean existsByEmail(String email);
 }
