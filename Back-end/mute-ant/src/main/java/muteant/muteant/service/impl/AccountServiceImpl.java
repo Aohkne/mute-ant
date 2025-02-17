@@ -1,6 +1,7 @@
 package muteant.muteant.service.impl;
 
 import muteant.muteant.model.dto.request.*;
+import muteant.muteant.model.dto.response.AuthResponse;
 import muteant.muteant.model.dto.response.MemberAccountRegisterResponse;
 import muteant.muteant.model.dto.response.PaginationWrapper;
 import muteant.muteant.model.dto.response.ProfileResponse;
@@ -11,9 +12,15 @@ import muteant.muteant.repository.AccountRepository;
 import muteant.muteant.service.AccountService;
 import muteant.muteant.util.AuthUtils;
 import lombok.RequiredArgsConstructor;
+import muteant.muteant.util.RandomUtils;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.authentication.AuthenticationManager;
 import muteant.muteant.util.JwtTokenProvider;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -113,17 +120,18 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public MemberAccountRegisterResponse getAccountById(Long id) {
+    public ProfileResponse getAccountById(Long id) {
         var account = accountRepository.findById(id)
                 .orElseThrow(() -> new ValidationException("Account not found"));
 
-        return MemberAccountRegisterResponse.builder()
+        return ProfileResponse.builder()
                 .id(account.getId())
-                .username(account.getUsername())
                 .email(account.getEmail())
                 .fullName(account.getFullName())
                 .role(account.getRole())
                 .gender(account.getGender())
+                .birthdate(account.getBirthdate())
+                .image(account.getImage())
                 .created_date(account.getCreatedDate())
                 .updated_date(account.getUpdatedDate())
                 .is_active(account.getIsActive())
@@ -171,131 +179,127 @@ public class AccountServiceImpl implements AccountService {
         }
     }
 
-//    @Override
-//    public AuthResponse authenticate(LoginRequest loginRequest) {
-//        Authentication authentication = authenticationManager.authenticate(
-//                new UsernamePasswordAuthenticationToken(
-//                        loginRequest.getUsername(),
-//                        loginRequest.getPassword()
-//                )
-//        );
-//
-//        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-//        String accessToken = jwtTokenProvider.generateAccessToken(userDetails);
-//        String refreshToken = jwtTokenProvider.generateRefreshToken(userDetails);
-//
-//        String role = userDetails.getAuthorities().stream()
-//                .map(GrantedAuthority::getAuthority)
-//                .findFirst()
-//                .orElse(null);
-//
-//        return AuthResponse.builder()
-//                .accessToken(accessToken)
-//                .refreshToken(refreshToken)
-//                .role(role)
-//                .build();
-//    }
-//
-//    @Transactional(rollbackFor = {ActionFailedException.class}, isolation = Isolation.REPEATABLE_READ)
-//    @Override
-//    public ProfileResponse updateMemberAccount(Long id, ProfileRequest request) {
-//        var account = accountRepository.findById(id)
-//                .orElseThrow(() -> new ValidationException("Account not found"));
-//
-//        // Đảm bảo cập nhật thông tin từ request
-//        account.setEmail(request.getEmail());
-//        account.setFullName(request.getFullName());
-//        account.setGender(request.getGender());
-//        account.setPhone(request.getPhone());
-//        account.setGithub(request.getGithub());
-//        account.setStudentCode(request.getStudent_code());
-//        account.setMajor(request.getMajor());
-//        account.setCurrentTerm(request.getCurrentTerm());
-//        account.setBirthday(request.getBirthday());
-//        account.setProfileImg(request.getProfileImg());
-//        account.setUpdatedDate(LocalDateTime.now());
-//
-//        try {
-//            var updatedAccount = accountRepository.save(account);
-//            return ProfileResponse.builder()
-//                    .email(updatedAccount.getEmail())
-//                    .github(updatedAccount.getGithub())
-//                    .student_code(updatedAccount.getStudentCode())
-//                    .fullName(updatedAccount.getFullName())
-//                    .gender(updatedAccount.getGender())
-//                    .phone(updatedAccount.getPhone())
-//                    .major(updatedAccount.getMajor())
-//                    .birthday(updatedAccount.getBirthday())
-//                    .profileImg(updatedAccount.getProfileImg())
-//                    .currentTerm(updatedAccount.getCurrentTerm())
-//                    .build();
-//        } catch (Exception ex) {
-//            throw new ActionFailedException("Failed to update account", ex);
-//        }
-//    }
-//
-//
-//    @Transactional
-//    public void resetPassword(String email) {
-//        AccountEntity account = accountRepository.findByEmail(email)
-//                .orElseThrow(() -> new ValidationException("No account found with this email"));
-//
-//        String randomPassword = RandomUtils.generateSecurePassword(12L); // Increased password length
-//        account.setPassword(passwordEncoder.encode(randomPassword));
-//        accountRepository.save(account);
-//
-//        sendPasswordResetEmail(account, randomPassword);
-//    }
-//
-//    @Override
-//    public List<String> getUserCurrentRole() {
-//        var account = authUtils.getUserFromAuthentication();
-//        return AuthUtils.convertUserToRole(account);
-//    }
-//
-//    @Override
-//    public ProfileResponse getProfile() {
-//        var account = authUtils.getUserFromAuthentication();
-//
-//        return buildProfileResponse(account);
-//    }
-//
-//    @Transactional
-//    public void changePassword(ChangePasswordRequest changePasswordRequest) {
-//        AccountEntity account = accountRepository.findByUsername(changePasswordRequest.getUsername())
-//                .orElseThrow(() -> new ValidationException("No account found with this username"));
-//
-//        if (!passwordEncoder.matches(changePasswordRequest.getOldPassword(), account.getPassword())) {
-//            throw new ValidationException("Old password is incorrect");
-//        }
-//
-//        validateNewPassword(changePasswordRequest.getNewPassword(), changePasswordRequest.getReNewPassword());
-//
-//        account.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
-//        accountRepository.save(account);
-//    }
-//
-//    private void sendPasswordResetEmail(AccountEntity account, String resetInfo) {
-//        SimpleMailMessage mailMessage = new SimpleMailMessage();
-//        mailMessage.setTo(account.getEmail());
-//        mailMessage.setSubject("Password Reset Request");
-//        mailMessage.setText("Your password reset token is: " + resetInfo +
-//                "\nThis token will expire in 15 minutes.");
-//
-//        mailSender.send(mailMessage);
-//    }
-//
-//    private void validateNewPassword(String password, String rePassword) {
-//        if (password == null || rePassword == null) {
-//            throw new ValidationException("Passwords cannot be null");
-//        }
-//        if (!password.equals(rePassword)) {
-//            throw new ValidationException("Passwords do not match");
-//        }
-//        if (password.length() < 8) {
-//            throw new ValidationException("Password must be at least 8 characters");
-//        }
-//    }
+    @Override
+    public AuthResponse authenticate(LoginRequest loginRequest) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginRequest.getUsername(),
+                        loginRequest.getPassword()
+                )
+        );
+
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String accessToken = jwtTokenProvider.generateAccessToken(userDetails);
+        String refreshToken = jwtTokenProvider.generateRefreshToken(userDetails);
+
+        String role = userDetails.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .findFirst()
+                .orElse(null);
+
+        return AuthResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .role(role)
+                .build();
+    }
+
+    @Transactional(rollbackFor = {ActionFailedException.class}, isolation = Isolation.REPEATABLE_READ)
+    @Override
+    public ProfileResponse updateMemberAccount(Long id, ProfileRequest request) {
+        var account = accountRepository.findById(id)
+                .orElseThrow(() -> new ValidationException("Account not found"));
+
+        // Đảm bảo cập nhật thông tin từ request
+        account.setEmail(request.getEmail());
+        account.setFullName(request.getFull_name());
+        account.setGender(request.getGender());
+        account.setBirthdate(request.getBirthdate());
+        account.setIsActive(request.getIs_active());
+        account.setRole(request.getRole());
+        account.setImage(request.getImage());
+        account.setUpdatedDate(LocalDateTime.now());
+
+        try {
+            var updatedAccount = accountRepository.save(account);
+            return ProfileResponse.builder()
+                    .email(updatedAccount.getEmail())
+                    .fullName(updatedAccount.getFullName())
+                    .role(updatedAccount.getRole())
+                    .gender(updatedAccount.getGender())
+                    .birthdate(updatedAccount.getBirthdate())
+                    .image(updatedAccount.getImage())
+                    .created_date(updatedAccount.getCreatedDate())
+                    .updated_date(updatedAccount.getUpdatedDate())
+                    .is_active(updatedAccount.getIsActive())
+                    .build();
+        } catch (Exception ex) {
+            throw new ActionFailedException("Failed to update account", ex);
+        }
+    }
+
+
+    @Transactional
+    public void resetPassword(String email) {
+        AccountEntity account = accountRepository.findByEmail(email)
+                .orElseThrow(() -> new ValidationException("No account found with this email"));
+
+        String randomPassword = RandomUtils.generateSecurePassword(12L); // Increased password length
+        account.setPassword(passwordEncoder.encode(randomPassword));
+        accountRepository.save(account);
+
+        sendPasswordResetEmail(account, randomPassword);
+    }
+
+    @Override
+    public List<String> getUserCurrentRole() {
+        var account = authUtils.getUserFromAuthentication();
+        return AuthUtils.convertUserToRole(account);
+    }
+
+    @Override
+    public ProfileResponse getProfile() {
+        var account = authUtils.getUserFromAuthentication();
+
+        return buildProfileResponse(account);
+    }
+
+    @Transactional
+    public void changePassword(ChangePasswordRequest changePasswordRequest) {
+        AccountEntity account = accountRepository.findByUsername(changePasswordRequest.getUsername())
+                .orElseThrow(() -> new ValidationException("No account found with this username"));
+
+        if (!passwordEncoder.matches(changePasswordRequest.getOldPassword(), account.getPassword())) {
+            throw new ValidationException("Old password is incorrect");
+        }
+
+        validateNewPassword(changePasswordRequest.getNewPassword(), changePasswordRequest.getReNewPassword());
+
+        account.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
+        accountRepository.save(account);
+    }
+
+    private void sendPasswordResetEmail(AccountEntity account, String resetInfo) {
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setTo(account.getEmail());
+        mailMessage.setSubject("Password Reset Request");
+        mailMessage.setText("Your password reset token is: " + resetInfo +
+                "\nThis token will expire in 15 minutes.");
+
+        mailSender.send(mailMessage);
+    }
+
+    private void validateNewPassword(String password, String rePassword) {
+        if (password == null || rePassword == null) {
+            throw new ValidationException("Passwords cannot be null");
+        }
+        if (!password.equals(rePassword)) {
+            throw new ValidationException("Passwords do not match");
+        }
+        if (password.length() < 8) {
+            throw new ValidationException("Password must be at least 8 characters");
+        }
+    }
 
     private ProfileResponse wrapAccountResponse(AccountEntity account) {
         return buildProfileResponse(account);
