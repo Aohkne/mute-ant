@@ -3,6 +3,7 @@ package muteant.muteant.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -20,6 +21,9 @@ public class AccountEntity extends BaseEntity {
     @Column(name = "password", nullable = false)
     private String password;
 
+    @Column(name = "full_name", nullable = false, length = 100)
+    private String fullName;
+
     @Column(name = "email", unique = true, nullable = false, length = 100)
     private String email;
 
@@ -30,7 +34,7 @@ public class AccountEntity extends BaseEntity {
     private String image;
 
     @Column(name = "birthdate")
-    private LocalDateTime birthdate;
+    private LocalDate birthdate;
 
     @Column(name = "gender", length = 6)
     private String gender;
