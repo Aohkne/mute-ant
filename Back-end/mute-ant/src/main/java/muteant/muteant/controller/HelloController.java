@@ -20,7 +20,6 @@ public class HelloController {
             content = @Content(schema = @Schema(implementation = String.class)))
     @GetMapping
     @ResponseBody
-    @PreAuthorize("hasRole('ROLE_MEMBER')")
     public ResponseEntity<String> Hello() {
         return ResponseEntity.ok("ok");
     }
