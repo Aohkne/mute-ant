@@ -34,6 +34,8 @@ public class SecurityConfig {
                     auth.requestMatchers("/hello/**", "/api-docs/**", "/swagger-ui/**", "/auth/**").permitAll()
                             .requestMatchers("/accounts/**").permitAll()
                             .requestMatchers("/roles/**").permitAll()
+                            .requestMatchers("/blogs/**").permitAll()
+                            .requestMatchers("/conversations/**").permitAll()
                             .anyRequest().authenticated();
                 })
                 .exceptionHandling(exception -> {
