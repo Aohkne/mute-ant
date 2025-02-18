@@ -36,6 +36,7 @@ public class SecurityConfig {
                             .requestMatchers("/roles/**").permitAll()
                             .requestMatchers("/blogs/**").permitAll()
                             .requestMatchers("/conversations/**").permitAll()
+                            .requestMatchers("/messages/**").permitAll()
                             .anyRequest().authenticated();
                 })
                 .exceptionHandling(exception -> {
