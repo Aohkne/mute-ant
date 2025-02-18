@@ -83,6 +83,18 @@ public class ConversationsController {
                 .build());
     }
 
+    @Operation(summary = "Get conversations by author ID", security = {@SecurityRequirement(name = "accessCookie")})
+    @GetMapping("/author/{authorId}")
+    public ResponseEntity<ResponseObject<List<ConversationResponse>>> getConversationsByAuthorId(@PathVariable Long authorId) {
+        var conversations = conversationService.getConversationsByAuthorId(authorId);
+        return ResponseEntity.ok(new ResponseObject.Builder<List<ConversationResponse>>()
+                .success(true)
+                .code("SUCCESS")
+                .content(conversations)
+                .message("Get conversations by author ID success")
+                .build());
+    }
+
     @PatchMapping("/publish/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_BCN')")
     @Operation(summary = "Publish a conversation by ID", security = {@SecurityRequirement(name = "accessCookie")})

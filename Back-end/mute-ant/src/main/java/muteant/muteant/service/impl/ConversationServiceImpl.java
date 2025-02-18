@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -117,21 +118,18 @@ public class ConversationServiceImpl implements ConversationService {
         conversationRepository.save(conversation);
     }
 
-//    @Transactional(readOnly = true)
-//    @Override
-//    public List<ConversationResponse> getConversationsByAuthorId(Long authorId) {
-//        var account = accountRepository.findById(authorId)
-//                .orElseThrow(() -> new ValidationException("Author not found"));
-//
-//        var conversations = conversationRepository.findByUserId(account);
-//        if (conversations.isEmpty()) {
-//            throw new ValidationException("No conversations found for the given author");
-//        }
-//
-//        return conversations.stream()
-//                .map(this::wrapConversationResponse)
-//                .toList();
-//    }
+    @Transactional
+    @Override
+    public List<ConversationResponse> getConversationsByAuthorId(Long authorId) {
+        AccountEntity author = accountRepository.findById(authorId)
+                .orElseThrow(() -> new ValidationException("Author not found"));
+
+        List<ConversationsEntity> conversations = conversationRepository.findByUserId(author);
+
+        return conversations.stream()
+                .map(this::wrapConversationResponse)
+                .collect(Collectors.toList());
+    }
 
 
     private ConversationResponse wrapConversationResponse(ConversationsEntity conversation) {

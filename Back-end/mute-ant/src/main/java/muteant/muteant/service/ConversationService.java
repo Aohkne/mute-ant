@@ -21,7 +21,7 @@ public interface ConversationService {
 
     void unpublishConversation(Long id, Long requestUserId);
 
-//    List<ConversationResponse> getConversationsByAuthorId(Long authorId);
+    List<ConversationResponse> getConversationsByAuthorId(Long authorId);
 
 
 }
