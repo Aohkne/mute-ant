@@ -1,3 +1,6 @@
+// root-layout.tsx
+import { Providers } from "../redux/provider";
+
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "../styles/globals.scss";
@@ -8,6 +11,7 @@ const poppins = Poppins({
   subsets: ["latin"],
   variable: "--font-poppins",
 });
+
 export const metadata: Metadata = {
   title: "mute-ant",
   description:
@@ -25,14 +29,16 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${poppins.variable} antialiased`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-        </ThemeProvider>
+        <Providers>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
+        </Providers>
       </body>
     </html>
   );
