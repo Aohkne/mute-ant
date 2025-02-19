@@ -43,6 +43,10 @@
       font-weight: 700;
       margin: 0 50px;
 
+      &:hover {
+        opacity: 0.8;
+      }
+
       @include respond-above(md) {
         display: block;
         font-size: 1.8rem;
