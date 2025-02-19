@@ -30,7 +30,7 @@ public class BlogServiceImpl implements BlogService {
         return blogRepository.query(queryWrapper,
                 blogRepository::queryAnySpecification,
                 (items) -> {
-                    var list = items.map(this::wrapBlogResponse).stream().toList();
+                    var list = items.map(this::wrapBlogResponse).toList();
                     return new PaginationWrapper.Builder<List<BlogResponse>>()
                             .setPaginationInfo(items)
                             .setData(list)

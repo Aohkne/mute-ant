@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "account") // Đổi tên bảng nếu cần
+@Table(name = "account")
 @Getter
 @Setter
 @NoArgsConstructor
