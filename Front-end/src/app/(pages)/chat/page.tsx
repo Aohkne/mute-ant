@@ -26,7 +26,6 @@ const Chatbot: React.FC = () => {
     },
   ]);
   const template = process.env.NEXT_PUBLIC_TEMPLATE || "gemini";
-  console.log("Template: ", template);
   const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_APIKEY || "");
   const [chat, setChat] = useState<ChatSession | null>(null);
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
@@ -84,27 +83,7 @@ const Chatbot: React.FC = () => {
       setLoading(false);
       setHistory((oldHistory) => {
         const newHistory = oldHistory.slice(0, oldHistory.length - 1);
-        const updatedHistory = [...newHistory, { role: "model", parts: text }];
-
-        // Save chat history to MongoDB
-        fetch("http://127.0.0.1:5000/api/saveChat", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userId: "exampleUserId123", // Replace with actual user ID
-            messages: updatedHistory.map((item) => ({
-              role: item.role,
-              content: item.parts,
-              timestamp: new Date(),
-            })),
-          }),
-        }).catch((error) =>
-          console.error("Failed to save chat history:", error)
-        );
-
-        return updatedHistory;
+        return [...newHistory, { role: "model", parts: text }];
       });
     } catch (error) {
       setHistory((oldHistory) => {

@@ -8,5 +8,4 @@ seaborn
 scikit-learn
 matplotlib
 flask
-pymongo
 flask-cors
