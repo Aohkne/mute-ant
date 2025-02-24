@@ -1,3 +1,5 @@
+"use client";
+
 import Panel from "@/components/Panel/Panel";
 import Sidebar from "@/components/Sidebar/Sidebar";
 import { ModeToggle } from "@/components/ui/mode-toggle";
@@ -5,6 +7,7 @@ import { ModeToggle } from "@/components/ui/mode-toggle";
 import styles from "./Dashboard.module.scss";
 import classNames from "classnames/bind";
 const cx = classNames.bind(styles);
+
 import {
   HardDriveDownload,
   HardDriveUpload,
@@ -12,6 +15,10 @@ import {
   UsersRound,
 } from "lucide-react";
 import { ChartArea } from "@/components/Chart/ChartArea";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "@/redux/store";
+import { fetchUsers } from "@/redux/features/accounts";
 
 //Chart
 const chartConfig = {
@@ -33,6 +40,21 @@ const chartData = [
 ];
 
 function Dashbroad() {
+  const dispatch = useDispatch<AppDispatch>();
+  const { totalPages } = useSelector((state: RootState) => state.accounts);
+
+  useEffect(() => {
+    dispatch(
+      fetchUsers({
+        page: 0,
+        size: 0,
+        sort: ["id,asc"],
+        gender: "",
+        searchTerm: "",
+      })
+    );
+  }, [dispatch]);
+
   return (
     <div className={cx("wrapper")}>
       <Sidebar />
@@ -43,7 +65,7 @@ function Dashbroad() {
           type="user"
           title="Users"
           icon={<UsersRound size={30} />}
-          total={120}
+          total={totalPages}
         />
         <Panel
           type="blog"

@@ -33,7 +33,7 @@
 
     .logo {
       position: absolute;
-      top: -10%;
+      top: -8%;
       left: 5%;
       width: auto;
       height: 50px;
@@ -43,7 +43,7 @@
       font-size: 5rem;
       line-height: 5.5rem;
       font-weight: 800;
-      padding: 0 30px;
+      padding: 0 15px;
     }
 
     .description {
@@ -160,24 +160,20 @@
 /* Animation */
 @keyframes open-float-right {
   0% {
-    transform: translateX(1000px);
+    transform: translateX(-1000px);
     max-height: 0;
   }
 
   25% {
-    transform: translateX(750px);
+    transform: translateX(-750px);
   }
 
   50% {
-    transform: translateX(500px);
-  }
-
-  75% {
-    transform: translateX(250px);
+    transform: translateX(-500px);
   }
 
   80% {
-    transform: translateX(150px);
+    transform: translateX(-150px);
   }
 
   100% {

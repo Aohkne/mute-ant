@@ -4,6 +4,7 @@ import Hero from "@/components/layouts/Hero/Hero";
 import Author from "@/components/layouts/Author/Author";
 import FAQ from "@/components/layouts/FAQ/FAQ";
 import Footer from "@/components/Footer/Footer";
+import { metadata } from "./metadata";
 
 export default function Home() {
   return (
@@ -22,3 +23,4 @@ export default function Home() {
     </div>
   );
 }
+export { metadata };
