@@ -40,3 +40,5 @@ out/
 ### Environment ###
 .env
 .env/
+
+mute-ant-key.pem
