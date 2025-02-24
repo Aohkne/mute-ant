@@ -19,7 +19,7 @@ services:
     restart: always
     environment:
       POSTGRES_USER: mute-ant
-      POSTGRES_PASSWORD: mute-antpassword
+      POSTGRES_PASSWORD: mute-antpass
       POSTGRES_DB: mute-ant
     ports:
       - "5432:5432"
