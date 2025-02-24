@@ -313,6 +313,7 @@ public class AccountServiceImpl implements AccountService {
                 .role(account.getRole())
                 .birthdate(account.getBirthdate())
                 .image(account.getImage())
+                .gender(account.getGender())
                 .created_date(account.getCreatedDate())
                 .updated_date(account.getUpdatedDate())
                 .is_active(account.getIsActive())
