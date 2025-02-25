@@ -1,14 +1,20 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+
+import Panel from "@/components/Panel/Panel";
+import Image from "next/image";
+import { LibraryBig } from "lucide-react";
+
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import Bold from "@tiptap/extension-bold";
+import Italic from "@tiptap/extension-italic";
+import Underline from "@tiptap/extension-underline";
+import TextAlign from "@tiptap/extension-text-align";
 
 import styles from "./TableBlogs.module.scss";
 import classNames from "classnames/bind";
-import Image from "next/image";
-import Panel from "@/components/Panel/Panel";
-import { LibraryBig } from "lucide-react";
 const cx = classNames.bind(styles);
 
 interface Blog {
@@ -146,7 +152,16 @@ function TableBlogs() {
 
   // Khởi tạo editor cho trường content sử dụng tiptap
   const editor = useEditor({
-    extensions: [StarterKit],
+    extensions: [
+      StarterKit,
+      Bold,
+      Italic,
+      Underline,
+      TextAlign.configure({
+        types: ["heading", "paragraph", "bulletList", "orderedList"],
+        alignments: ["left", "center", "right", "justify"],
+      }),
+    ],
     content: editingBlog?.content || "",
   });
 
@@ -205,6 +220,7 @@ function TableBlogs() {
   const handleModalSave = () => {
     if (editingBlog) {
       const updatedContent = editor?.getHTML() || "";
+      console.log("Content sau khi edit:", updatedContent);
       const updatedBlog = { ...editingBlog, content: updatedContent };
 
       setBlogs((prevBlogs) => {
@@ -363,7 +379,90 @@ function TableBlogs() {
 
               <div className={cx("formGroup")}>
                 <label>Content</label>
-                <EditorContent editor={editor} />
+
+                <div className={cx("toolbar")}>
+                  <button
+                    onClick={() => editor?.chain().focus().toggleBold().run()}
+                    className={editor?.isActive("bold") ? cx("active") : ""}
+                  >
+                    B
+                  </button>
+                  <button
+                    onClick={() => editor?.chain().focus().toggleItalic().run()}
+                    className={editor?.isActive("italic") ? cx("active") : ""}
+                  >
+                    I
+                  </button>
+                  <button
+                    onClick={() =>
+                      editor?.chain().focus().toggleUnderline().run()
+                    }
+                    className={
+                      editor?.isActive("underline") ? cx("active") : ""
+                    }
+                  >
+                    U
+                  </button>
+
+                  <button
+                    onClick={() =>
+                      editor?.chain().focus().setTextAlign("left").run()
+                    }
+                    className={
+                      editor?.isActive({ textAlign: "left" })
+                        ? cx("active")
+                        : ""
+                    }
+                  >
+                    Left
+                  </button>
+
+                  <button
+                    onClick={() =>
+                      editor?.chain().focus().setTextAlign("center").run()
+                    }
+                    className={
+                      editor?.isActive({ textAlign: "center" })
+                        ? cx("active")
+                        : ""
+                    }
+                  >
+                    Center
+                  </button>
+
+                  <button
+                    onClick={() =>
+                      editor?.chain().focus().setTextAlign("right").run()
+                    }
+                    className={
+                      editor?.isActive({ textAlign: "right" })
+                        ? cx("active")
+                        : ""
+                    }
+                  >
+                    Right
+                  </button>
+
+                  <button
+                    onClick={() =>
+                      editor?.chain().focus().setTextAlign("justify").run()
+                    }
+                    className={
+                      editor?.isActive({ textAlign: "justify" })
+                        ? cx("active")
+                        : ""
+                    }
+                  >
+                    Justify
+                  </button>
+
+                  <div className={cx("editor-container")}>
+                    <EditorContent
+                      editor={editor}
+                      className={cx("editor-content")}
+                    />
+                  </div>
+                </div>
               </div>
 
               <div className={cx("image-container")}>

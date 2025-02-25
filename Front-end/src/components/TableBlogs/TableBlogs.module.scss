@@ -228,6 +228,80 @@
       resize: vertical;
       min-height: 80px;
     }
+
+    .toolbar {
+      margin-bottom: 10px;
+      border-radius: 4px;
+
+      button {
+        margin: 5px 0px 15px;
+        margin-right: 10px;
+        font-size: 1.2rem;
+        background: var(--background-editor);
+        border: 1px solid var(--border-table);
+        padding: 5px 10px;
+        cursor: pointer;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px var(--box-shadow);
+        transition: all 0.2s ease-in-out;
+
+        &:hover {
+          color: #fff;
+          transform: translateY(5px);
+          background: var(--purple-hover-btn);
+        }
+
+        &.active {
+          color: #fff;
+          transform: translateY(5px);
+          border-color: var(--box-shadow);
+          background: var(--purple-hover-btn);
+          box-shadow: 0 0px 0px var(--box-shadow);
+        }
+      }
+    }
+
+    .editor-container {
+      padding: 10px;
+      background-color: var(--background-editor);
+      border: 2px solid var(--border-table);
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: box-shadow 0.2s;
+
+      .editor-content {
+        outline: none;
+        font-size: 3.8rem;
+        font-weight: 300;
+        cursor: text;
+
+        p {
+          margin: 0;
+        }
+
+        strong,
+        em,
+        u {
+          font-size: 1.5rem;
+        }
+
+        strong {
+          font-weight: bold;
+        }
+
+        em {
+          font-style: italic;
+        }
+
+        u {
+          text-decoration: underline;
+        }
+
+        :focus {
+          outline: none;
+        }
+      }
+    }
   }
 
   .image-container {
