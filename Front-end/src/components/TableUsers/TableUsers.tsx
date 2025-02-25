@@ -1,89 +1,38 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./TableUsers.module.scss";
 import classNames from "classnames/bind";
 import Image from "next/image";
 import Panel from "@/components/Panel/Panel";
 import { UsersRound } from "lucide-react";
+import { useAppDispatch, useAppSelector } from "@/hooks";
+import { fetchUsers } from "@/redux/features/accounts";
 
 const cx = classNames.bind(styles);
 
-interface User {
-  id: number;
-  image: string;
-  fullname: string;
-  dob: string;
-  gender: string;
-}
-
-const data: User[] = [
-  {
-    id: 1,
-    image: "",
-    fullname: "Nguyễn Văn A",
-    dob: "2004-02-02",
-    gender: "Male",
-  },
-  {
-    id: 2,
-    image: "",
-    fullname: "Trần Thị B",
-    dob: "2005-03-03",
-    gender: "Female",
-  },
-  {
-    id: 3,
-    image: "",
-    fullname: "Trần Thị B",
-    dob: "2005-03-03",
-    gender: "Female",
-  },
-  {
-    id: 4,
-    image: "",
-    fullname: "Trần Thị B",
-    dob: "2005-03-03",
-    gender: "Female",
-  },
-  {
-    id: 5,
-    image: "",
-    fullname: "Trần Thị B",
-    dob: "2005-03-03",
-    gender: "Female",
-  },
-  {
-    id: 6,
-    image: "",
-    fullname: "Trần Thị B",
-    dob: "2005-03-03",
-    gender: "Female",
-  },
-];
-
 function TableUsers() {
-  const [users] = useState<User[]>(data);
+  const dispatch = useAppDispatch();
+  const { users, totalPages, totalElements, loading } = useAppSelector(
+    (state) => state.accounts
+  );
+
   const [searchTerm, setSearchTerm] = useState("");
   const [filterGender, setFilterGender] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 5;
 
-  // Search và Filter
-  const filteredUsers = users.filter((user) => {
-    const matchesGender = filterGender ? user.gender === filterGender : true;
-    const matchesSearch = searchTerm
-      ? user.fullname.toLowerCase().includes(searchTerm.toLowerCase())
-      : true;
-    return matchesGender && matchesSearch;
-  });
-
-  const totalUsers = filteredUsers.length;
-  const totalPages = Math.ceil(totalUsers / itemsPerPage);
-  const displayedUsers = filteredUsers.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+  useEffect(() => {
+    dispatch(
+      fetchUsers({
+        page: currentPage,
+        size: itemsPerPage,
+        sort: ["id,asc"],
+        gender: filterGender.toLowerCase(),
+        searchTerm: searchTerm,
+      })
+    );
+  }, [dispatch, currentPage, itemsPerPage, filterGender, searchTerm]);
 
   return (
     <>
@@ -92,7 +41,7 @@ function TableUsers() {
           type="user"
           title="Users"
           icon={<UsersRound size={30} />}
-          total={totalUsers}
+          total={totalPages}
         />
       </div>
       <div className={cx("wrapper")}>
@@ -126,39 +75,45 @@ function TableUsers() {
             </tr>
           </thead>
           <tbody>
-            {displayedUsers.map((user, index) => (
-              <tr key={user.id}>
-                <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
-                <td>
-                  <Image
-                    src={user.image || "/images/img/default-user.png"}
-                    alt={user.fullname}
-                    width={50}
-                    height={50}
-                    className={cx("avatar")}
-                  />
-                </td>
-                <td>{user.fullname}</td>
-                <td>{user.dob}</td>
-                <td>{user.gender}</td>
+            {loading ? (
+              <tr>
+                <td colSpan={5}>Loading...</td>
               </tr>
-            ))}
+            ) : (
+              users.map((user, index) => (
+                <tr key={user.id}>
+                  <td>{currentPage * itemsPerPage + index + 1}</td>
+                  <td>
+                    <Image
+                      src={user.image || "/images/img/default-user.png"}
+                      alt={user.fullName}
+                      width={50}
+                      height={50}
+                      className={cx("avatar")}
+                    />
+                  </td>
+                  <td>{user.fullName}</td>
+                  <td>{user.birthdate}</td>
+                  <td>{user.gender}</td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
 
         {/* Phân trang */}
         <div className={cx("pagination")}>
           <button
-            disabled={currentPage === 1}
+            disabled={currentPage === 0}
             onClick={() => setCurrentPage((prev) => prev - 1)}
           >
             Prev
           </button>
           <span>
-            Page {currentPage} of {totalPages}
+            Page {currentPage + 1} of {totalElements}
           </span>
           <button
-            disabled={currentPage === totalPages}
+            disabled={currentPage + 1 === totalElements}
             onClick={() => setCurrentPage((prev) => prev + 1)}
           >
             Next

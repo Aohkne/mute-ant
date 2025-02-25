@@ -1,56 +1,70 @@
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { AuthState } from "../../../types/auth/authTypes";
+import { toast } from "react-toastify";
 
-// Define async thunk for login
-export const loginUserAsync = createAsyncThunk(
-  "auth/loginUser",
-  async (username: string, thunkAPI) => {
+interface AuthState {
+  user: any;
+  isAuthenticated: boolean;
+  loading: boolean;
+}
+
+const initialState: AuthState = {
+  user: null,
+  isAuthenticated: false,
+  loading: false,
+};
+
+export const loginAction = createAsyncThunk(
+  "auth/login",
+  async ({ username, password }: { username: string; password: string }) => {
     try {
-      const response = await axios.post("https://api.example.com/login", {
-        username,
-      });
-      return response.data; // Assuming API returns user data
-    } catch (error: unknown) {
-      // Type error as any or define a specific type
-      const typedError = error as { response: { data: any } }; // Adjust this type as per actual structure
-      return thunkAPI.rejectWithValue(typedError.response.data);
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
+        {
+          username,
+          password,
+        }
+      );
+      // toast.success("Login successfully!");
+      return response.data.content;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        toast.error(error.response.data.message || "Login failed.");
+      } else {
+        toast.error("Network error. Please check your connection.");
+      }
+      throw error;
     }
   }
 );
-
-const initialState: AuthState = {
-  isAuthenticated: false,
-  user: null,
-};
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    logout: (state) => {
-      state.isAuthenticated = false;
+    logout(state) {
       state.user = null;
+      state.isAuthenticated = false;
+      sessionStorage.removeItem("user");
+      toast.success("Logged out successfully.");
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(loginUserAsync.pending, (state) => {
-        // Optionally set loading state here
+      .addCase(loginAction.pending, (state) => {
+        state.loading = true;
       })
-      .addCase(
-        loginUserAsync.fulfilled,
-        (state, action: PayloadAction<any>) => {
-          state.isAuthenticated = true;
-          state.user = action.payload; // Assuming payload is user data
-        }
-      )
-      .addCase(loginUserAsync.rejected, (state, action: PayloadAction<any>) => {
-        // Optionally handle error state here
+      .addCase(loginAction.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload;
+        state.isAuthenticated = true;
+      })
+      .addCase(loginAction.rejected, (state) => {
+        state.loading = false;
+        toast.error("Login failed. Please check your credentials.");
       });
   },
 });
 
-// Make sure to use default export for authSlice reducer
-export default authSlice.reducer;
 export const { logout } = authSlice.actions;
+export default authSlice.reducer;

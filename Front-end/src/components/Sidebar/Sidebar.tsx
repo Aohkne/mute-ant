@@ -12,6 +12,9 @@ import {
 } from "lucide-react";
 import classNames from "classnames/bind";
 import styles from "./Sidebar.module.scss";
+import { useAppDispatch } from "../../hooks";
+import { logout } from "../../redux/features/auth";
+import { useRouter } from "next/navigation";
 
 const cx = classNames.bind(styles);
 
@@ -19,6 +22,9 @@ const Sidebar: React.FC = () => {
   const [isLocked, setIsLocked] = useState<boolean | null>(null);
   const [isVisible, setIsVisible] = useState<boolean>(true);
   let timeoutId: NodeJS.Timeout | null = null;
+
+  const dispatch = useAppDispatch();
+  const router = useRouter();
 
   useEffect(() => {
     const sidebarLock = localStorage.getItem("sidebarLock");
@@ -64,6 +70,11 @@ const Sidebar: React.FC = () => {
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
+
+  const handleLogout = () => {
+    dispatch(logout());
+    router.replace("/login");
+  };
 
   return (
     <div
@@ -127,7 +138,7 @@ const Sidebar: React.FC = () => {
       </div>
 
       <div className={cx("action")}>
-        <button className={cx("logout-btn")}>
+        <button className={cx("logout-btn")} onClick={handleLogout}>
           <LogOut />
           <span>LOGOUT</span>
         </button>
