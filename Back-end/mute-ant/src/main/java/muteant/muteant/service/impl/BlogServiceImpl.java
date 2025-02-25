@@ -4,7 +4,6 @@ import muteant.muteant.model.dto.request.BlogRequest;
 import muteant.muteant.model.dto.request.QueryWrapper;
 import muteant.muteant.model.dto.response.BlogResponse;
 import muteant.muteant.model.dto.response.PaginationWrapper;
-import muteant.muteant.model.entity.AccountEntity;
 import muteant.muteant.model.entity.BlogEntity;
 import muteant.muteant.model.exception.ActionFailedException;
 import muteant.muteant.model.exception.ValidationException;
@@ -48,9 +47,6 @@ public class BlogServiceImpl implements BlogService {
     @Transactional
     @Override
     public BlogResponse createBlog(BlogRequest blogRequest) {
-        AccountEntity author = accountRepository.findById(blogRequest.getAuthorId())
-                .orElseThrow(() -> new RuntimeException("Author not found"));
-
         if (blogRequest.getContent() == null || blogRequest.getContent().trim().isEmpty()) {
             throw new ValidationException("Content cannot be null or empty");
         }
@@ -60,7 +56,7 @@ public class BlogServiceImpl implements BlogService {
                 .description(blogRequest.getDescription())
                 .content(blogRequest.getContent() != null ? blogRequest.getContent() : "")
                 .thumbnail(blogRequest.getThumbnail())
-                .authorId(author)
+                .author(blogRequest.getAuthor())
                 .images(blogRequest.getImages())
                 .status("DRAFT")
                 .build();
@@ -118,24 +114,13 @@ public class BlogServiceImpl implements BlogService {
         var requestUser = accountRepository.findById(requestUserId)
                 .orElseThrow(() -> new ValidationException("User not found"));
 
-        if (!blog.getAuthorId().getId().equals(requestUserId) && !"ADMIN".equals(requestUser.getRole())) {
+        if (!"ADMIN".equals(requestUser.getRole())) {
             throw new ActionFailedException("You do not have permission to unpublish this blog");
         }
         blog.setStatus("DRAFT");
         blog.setUpdatedDate(LocalDateTime.now());
         blogRepository.save(blog);
     }
-
-    @Override
-    public List<BlogResponse> getBlogsByAuthorId(Long authorId) {
-        var account = accountRepository.findById(authorId)
-                .orElseThrow(() -> new ValidationException("Author not found"));
-
-        return blogRepository.findByAuthorId(account)
-                .map(this::wrapBlogResponse)
-                .stream().toList();
-    }
-
 
     @Override
     public List<BlogResponse> getBlogsByStatus(String status) {
@@ -158,7 +143,7 @@ public class BlogServiceImpl implements BlogService {
                 .description(blog.getDescription())
                 .content(blog.getContent())
                 .thumbnail(blog.getThumbnail())
-                .authorName(blog.getAuthorId().getFullName())
+                .author(blog.getAuthor())
                 .images(blog.getImages())
                 .status(blog.getStatus())
                 .created_date(blog.getCreatedDate())
@@ -167,15 +152,13 @@ public class BlogServiceImpl implements BlogService {
     }
 
     private BlogResponse wrapBlogResponse(BlogEntity blog) {
-        var author = accountRepository.findById(blog.getAuthorId().getId())
-                .orElseThrow(() -> new RuntimeException("Author not found"));
         return BlogResponse.builder()
                 .id(blog.getId())
                 .title(blog.getTitle())
                 .description(blog.getDescription())
                 .content(blog.getContent())
                 .thumbnail(blog.getThumbnail())
-                .authorName(author.getFullName())
+                .author(blog.getAuthor())
                 .images(blog.getImages())
                 .status(blog.getStatus())
                 .created_date(blog.getCreatedDate())

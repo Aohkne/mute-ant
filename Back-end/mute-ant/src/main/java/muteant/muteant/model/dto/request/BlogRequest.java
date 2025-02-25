@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 public class BlogRequest {
     @NotNull(message = "Author id is required")
-    private Long authorId;
+    private String author;
 
     @NotNull(message = "Title is required")
     private String title;
