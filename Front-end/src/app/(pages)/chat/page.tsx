@@ -6,51 +6,34 @@ import classNames from "classnames/bind";
 import styles from "./Chat.module.scss";
 import Header from "@/components/Header/Header";
 import Image from "next/image";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { useChatSession } from "./useChatSession";
 
 const cx = classNames.bind(styles);
 
-interface ChatSession {
-  sendMessage: (
-    message: string
-  ) => Promise<{ response: { text: () => string } }>;
+interface MessageItem {
+  role: string;
+  parts: string;
 }
 
 const Chatbot: React.FC = () => {
-  const [input, setInput] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [history, setHistory] = useState([
+  const [input, setInput] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [history, setHistory] = useState<MessageItem[]>([
     {
       role: "model",
-      parts: "Great to meet you. I'm Gemini, your chatbot.",
+      parts: "Rất hân hạnh được gặp bạn. Mình là mute-ant, chatbot của bạn. Bạn có muốn hỏi gì về khiếm thính, ngôn ngữ kí hiệu không?",
     },
   ]);
-  const template = process.env.NEXT_PUBLIC_TEMPLATE || "gemini";
-  const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_APIKEY || "");
-  const [chat, setChat] = useState<ChatSession | null>(null);
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-  const messageContainerRef = useRef<HTMLDivElement>(null);
+  const messageContainerRef = useRef<HTMLDivElement | null>(null);
+  const { chat, resetChat } = useChatSession();
 
   useEffect(() => {
     if (messageContainerRef.current) {
-      messageContainerRef.current.scrollTop =
-        messageContainerRef.current.scrollHeight;
+      messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
     }
   }, [history]);
 
-  useEffect(() => {
-    if (!chat) {
-      setChat(
-        model.startChat({
-          generationConfig: {
-            maxOutputTokens: 4000,
-          },
-        })
-      );
-    }
-  }, [chat, model]);
-
-  async function chatting() {
+  async function chatting(): Promise<void> {
     setLoading(true);
     setHistory((oldHistory) => [
       ...oldHistory,
@@ -77,9 +60,12 @@ const Chatbot: React.FC = () => {
         });
         return;
       }
+
+      const template = process.env.NEXT_PUBLIC_TEMPLATE || "You are Mute-ant, an assistant specifically designed for the deaf and mute.\n\n🌟 **Your mission:**\n- Always respond in Vietnamese, regardless of the input language.\n- All your answers should be related to sign language no matter what the question is.\n- Assist in finding information, answering questions, and providing guidance on issues related to deafness and muteness.\n- If the user wants to learn sign language, describe in detail **how to perform the hand gestures** to express the letter, word, or sentence they want to know.\n- If possible, provide illustrative images or video tutorials from reputable sources.\n- Respond politely, concisely, and clearly, avoiding technical jargon that may be confusing.\n- Do not answer questions unrelated to the topic of deafness and muteness.\n- At the end of each answer, add a few emoticons to create a friendly atmosphere.\n\n🔹 **Example responses:**\n\n❓ **User**: \"How do you say 'Hello' in sign language?\"\n✅ **You**: \"To say 'Hello' in Vietnamese Sign Language (VSL), do the following:\n1️⃣ Raise your right hand to your forehead, palm facing out.\n2️⃣ Slightly tilt your hand forward as if you are waving gently.\n3️⃣ Keep a smile on your face to create a friendly impression! 😊👋\n\n(You can see more illustrated instructions here: [attach link if available])\"\n\n❓ **User**: \"How to say 'Thank you' in sign language?\"\n✅ **You**: \"You can follow these steps:\n1️⃣ Bring the fingertips of your right hand close to your chin, palm facing in.\n2️⃣ Gently move your hand forward, as if you are pushing the thank you out.\n3️⃣ Combine with a smile to show sincerity. 😊🙏\n\n(You can see the illustrated image here: [attach link if available])\"\n\n🚀 **Be a dedicated and reliable assistant!** 😊";
       const result = await chat.sendMessage(input + template);
       const response = await result.response;
       const text = response.text();
+
       setLoading(false);
       setHistory((oldHistory) => {
         const newHistory = oldHistory.slice(0, oldHistory.length - 1);
@@ -99,22 +85,22 @@ const Chatbot: React.FC = () => {
     }
   }
 
-  function handleKeyDown(e: React.KeyboardEvent) {
+  function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>): void {
     if (e.key === "Enter") {
       e.preventDefault();
       chatting();
     }
   }
 
-  function reset() {
+  function reset(): void {
     setHistory([
       {
         role: "model",
-        parts: "Great to meet you. I'm Gemini, your chatbot.",
+        parts: "Rất hân hạnh được gặp bạn. Mình là mute-ant, chatbot của bạn. Bạn có muốn hỏi gì về khiếm thính, ngôn ngữ kí hiệu không?",
       },
     ]);
     setInput("");
-    setChat(null);
+    resetChat();
   }
 
   return (
@@ -125,7 +111,7 @@ const Chatbot: React.FC = () => {
 
       <main className={cx("content", "py-10")}>
         <div className={cx("chat-container")}>
-          <div className={cx("message-container")}>
+          <div className={cx("message-container")} ref={messageContainerRef}>
             {history.map((item, index) => (
               <div
                 key={index}
