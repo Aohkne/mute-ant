@@ -5,6 +5,7 @@ import React, { useState, useEffect } from "react";
 import Panel from "@/components/Panel/Panel";
 import Image from "next/image";
 import { LibraryBig } from "lucide-react";
+import { toast } from "react-toastify";
 
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
@@ -13,144 +14,48 @@ import Italic from "@tiptap/extension-italic";
 import Underline from "@tiptap/extension-underline";
 import TextAlign from "@tiptap/extension-text-align";
 
+import { useSelector, useDispatch } from "react-redux";
+import { RootState, AppDispatch } from "@/redux/store";
+import { fetchBlogs } from "@/redux/features/blogs/blogSlice";
+
+import { postNewBlog, resetPostState } from "@/redux/features/blogs";
+import { editBlog, resetEditState } from "@/redux/features/blogs/editSlice";
+
 import styles from "./TableBlogs.module.scss";
 import classNames from "classnames/bind";
 const cx = classNames.bind(styles);
 
 interface Blog {
-  id: number;
-  title: string;
+  id?: number;
   author: string;
-  description?: string;
+  title: string;
   content?: string;
-  thumbnail?: string;
-  images?: string[];
-  status?: string;
+  description: string;
+  status: string;
+  thumbnail: string;
+  images: string[];
+  created_date: string;
 }
 
-const initialData: Blog[] = [
-  {
-    id: 1,
-    title: "Blog 1",
-    author: "Author 1",
-    status: "published",
-    description: "Mô tả ngắn cho Blog 1",
-    content: "<p>Nội dung blog 1</p>",
-    thumbnail: "",
-    images: [],
-  },
-  {
-    id: 2,
-    title: "Blog 2",
-    author: "Author 2",
-    status: "draft",
-    description: "Mô tả ngắn cho Blog 2",
-    content: "<p>Nội dung blog 2</p>",
-    thumbnail: "",
-    images: [],
-  },
-  {
-    id: 3,
-    title: "Blog 2",
-    author: "Author 2",
-    status: "draft",
-    description: "Mô tả ngắn cho Blog 2",
-    content: "<p>Nội dung blog 2</p>",
-    thumbnail: "",
-    images: [],
-  },
-  {
-    id: 4,
-    title: "Blog 2",
-    author: "Author 2",
-    status: "draft",
-    description: "Mô tả ngắn cho Blog 2",
-    content: "<p>Nội dung blog 2</p>",
-    thumbnail: "",
-    images: [],
-  },
-  {
-    id: 5,
-    title: "Blog 2",
-    author: "Author 2",
-    status: "draft",
-    description: "Mô tả ngắn cho Blog 2",
-    content: "<p>Nội dung blog 2</p>",
-    thumbnail: "",
-    images: [],
-  },
-  {
-    id: 6,
-    title: "Blog 2",
-    author: "Author 2",
-    status: "draft",
-    description: "Mô tả ngắn cho Blog 2",
-    content: "<p>Nội dung blog 2</p>",
-    thumbnail: "",
-    images: [],
-  },
-  {
-    id: 7,
-    title: "Blog 2",
-    author: "Author 2",
-    status: "draft",
-    description: "Mô tả ngắn cho Blog 2",
-    content: "<p>Nội dung blog 2</p>",
-    thumbnail: "",
-    images: [],
-  },
-  {
-    id: 8,
-    title: "Blog 2",
-    author: "Author 2",
-    status: "draft",
-    description: "Mô tả ngắn cho Blog 2",
-    content: "<p>Nội dung blog 2</p>",
-    thumbnail: "",
-    images: [],
-  },
-  {
-    id: 9,
-    title: "Blog 2",
-    author: "Author 2",
-    status: "draft",
-    description: "Mô tả ngắn cho Blog 2",
-    content: "<p>Nội dung blog 2</p>",
-    thumbnail: "",
-    images: [],
-  },
-  {
-    id: 10,
-    title: "Blog 2",
-    author: "Author 2",
-    status: "draft",
-    description: "Mô tả ngắn cho Blog 2",
-    content: "<p>Nội dung blog 2</p>",
-    thumbnail: "",
-    images: [],
-  },
-  {
-    id: 11,
-    title: "Blog 2",
-    author: "Author 2",
-    status: "draft",
-    description: "Mô tả ngắn cho Blog 2",
-    content: "<p>Nội dung blog 2</p>",
-    thumbnail: "",
-    images: [],
-  },
-];
-
 function TableBlogs() {
-  const [blogs, setBlogs] = useState<Blog[]>(initialData);
   const [filterStatus, setFilterStatus] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [modalOpen, setModalOpen] = useState(false);
-  const [editingBlog, setEditingBlog] = useState<Blog | null>(null);
 
-  // Khởi tạo editor cho trường content sử dụng tiptap
+  const [editingBlog, setEditingBlog] = useState<Blog>({
+    id: undefined,
+    author: "",
+    title: "",
+    content: "",
+    description: "",
+    status: "draft",
+    thumbnail: "",
+    images: [],
+    created_date: new Date().toISOString(),
+  });
+
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -165,12 +70,54 @@ function TableBlogs() {
     content: editingBlog?.content || "",
   });
 
-  // Khi blog được chọn để chỉnh sửa, cập nhật lại nội dung cho editor
+  // GET Blogs
   useEffect(() => {
-    if (editor && editingBlog) {
-      editor.commands.setContent(editingBlog.content || "");
+    if (editor && editingBlog.content) {
+      editor.commands.setContent(editingBlog.content);
     }
-  }, [editingBlog, editor]);
+  }, [editingBlog.content, editor]);
+
+  const dispatch = useDispatch<AppDispatch>();
+  const { blogs, loading, error, pagination } = useSelector(
+    (state: RootState) => state.blogs
+  );
+
+  useEffect(() => {
+    dispatch(fetchBlogs(pagination?.page));
+  }, [dispatch, pagination?.page]);
+
+  // POST Blog
+  const { success } = useSelector((state: RootState) => state.postBlogs);
+
+  // Edit Blog
+  const { success: editSuccess } = useSelector(
+    (state: RootState) => state.editBlog
+  );
+
+  useEffect(() => {
+    if (success || editSuccess) {
+      toast.success(
+        success ? "New blog posted successfully!" : "Blog edited successfully!"
+      );
+      dispatch(resetPostState());
+      dispatch(resetEditState());
+      setModalOpen(false);
+      setEditingBlog({
+        author: "",
+        title: "",
+        content: "",
+        description: "",
+        status: "draft",
+        thumbnail: "",
+        images: [],
+        created_date: new Date().toISOString(),
+      });
+      dispatch(fetchBlogs(pagination?.page));
+    }
+  }, [success, editSuccess, dispatch, pagination?.page]);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
 
   // Lọc blog theo trạng thái và search theo title, author
   const filteredBlogs = blogs.filter((blog) => {
@@ -192,13 +139,15 @@ function TableBlogs() {
   // Mở modal để chỉnh sửa blog hiện có
   const handleEdit = (blog: Blog) => {
     setEditingBlog(blog);
+
+    console.log(editingBlog);
+
     setModalOpen(true);
   };
 
   // Mở modal để thêm mới blog
   const handleAddNew = () => {
     setEditingBlog({
-      id: Date.now(),
       title: "",
       author: "",
       description: "",
@@ -206,13 +155,24 @@ function TableBlogs() {
       thumbnail: "",
       images: [],
       status: "draft",
+      created_date: new Date().toISOString(),
     });
     setModalOpen(true);
   };
 
   const handleModalClose = () => {
     setModalOpen(false);
-    setEditingBlog(null);
+    setEditingBlog({
+      id: NaN,
+      title: "",
+      author: "",
+      description: "",
+      content: "",
+      thumbnail: "",
+      images: [],
+      status: "draft",
+      created_date: new Date().toISOString(),
+    });
     if (editor) editor.commands.setContent("");
   };
 
@@ -220,21 +180,15 @@ function TableBlogs() {
   const handleModalSave = () => {
     if (editingBlog) {
       const updatedContent = editor?.getHTML() || "";
-      console.log("Content sau khi edit:", updatedContent);
-      const updatedBlog = { ...editingBlog, content: updatedContent };
+      const updatedBlog = { ...editingBlog, content: updatedContent || "" };
 
-      setBlogs((prevBlogs) => {
-        const index = prevBlogs.findIndex((blog) => blog.id === updatedBlog.id);
-        if (index !== -1) {
-          // Cập nhật blog hiện có
-          const newBlogs = [...prevBlogs];
-          newBlogs[index] = updatedBlog;
-          return newBlogs;
-        } else {
-          // Thêm mới blog vào đầu danh sách
-          return [updatedBlog, ...prevBlogs];
-        }
-      });
+      if (updatedBlog.id) {
+        // Chuyển đổi id thành string
+        dispatch(editBlog(updatedBlog));
+      } else {
+        dispatch(postNewBlog(updatedBlog));
+      }
+
       handleModalClose();
     }
   };
@@ -244,17 +198,24 @@ function TableBlogs() {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       const url = URL.createObjectURL(file);
-      setEditingBlog((prev) => (prev ? { ...prev, thumbnail: url } : prev));
+      setEditingBlog((prev) => {
+        if (prev.thumbnail) {
+          URL.revokeObjectURL(prev.thumbnail);
+        }
+        return { ...prev, thumbnail: url };
+      });
     }
   };
 
-  // Xử lý thay đổi file cho images (nhiều file) với preview
   const handleImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const filesArray = Array.from(e.target.files).map((file) =>
         URL.createObjectURL(file)
       );
-      setEditingBlog((prev) => (prev ? { ...prev, images: filesArray } : prev));
+      setEditingBlog((prev) => {
+        prev.images.forEach((url) => URL.revokeObjectURL(url));
+        return { ...prev, images: filesArray };
+      });
     }
   };
 
