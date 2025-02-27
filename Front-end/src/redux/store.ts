@@ -4,12 +4,18 @@ import { configureStore } from "@reduxjs/toolkit";
 import counterReducer from "./features/counter/counterSlice";
 import authReducer from "./features/auth/authSlice";
 import accountsReducer from "./features/accounts/accountsSlice";
+import blogsReducer from "./features/blogs/blogSlice";
+import postBlogsReducer from "./features/blogs/postSlice";
+import editBlogReducer from "./features/blogs/editSlice";
 
 export const store = configureStore({
   reducer: {
     counter: counterReducer,
     auth: authReducer,
     accounts: accountsReducer,
+    blogs: blogsReducer,
+    postBlogs: postBlogsReducer,
+    editBlog: editBlogReducer,
   },
 });
 
