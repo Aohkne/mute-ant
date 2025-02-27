@@ -1,10 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import * as pdfjsLib from "pdfjs-dist";
-
-// Cấu hình worker cho pdfjs
-pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
 
 interface ChatResponse {
   response: {
@@ -18,8 +14,15 @@ export interface ChatSession {
 
 export function useChatSession() {
   const [chat, setChat] = useState<ChatSession | null>(null);
+  const [fileRetrievalStatus, setFileRetrievalStatus] = useState<{
+    txt: boolean | null;
+  }>({ txt: null });
   const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_APIKEY || "");
   const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+
+  const template =
+    process.env.NEXT_PUBLIC_TEMPLATE ||
+    "You are Mute-ant, an assistant specifically designed for the deaf and mute...";
 
   useEffect(() => {
     if (!chat) {
@@ -34,6 +37,29 @@ export function useChatSession() {
         generationConfig: {
           maxOutputTokens: 4000,
         },
+        // Apply template only once during initialization
+        history: [
+          {
+            role: "user",
+            parts: [{ text: "Initialize with the following system prompt" }],
+          },
+          {
+            role: "model",
+            parts: [{ text: "I'm ready to help" }],
+          },
+          {
+            role: "user",
+            parts: [{ text: template }],
+          },
+          {
+            role: "model",
+            parts: [
+              {
+                text: "Understood. I am now Mute-ant, an assistant specifically designed for the deaf and mute. I will follow all the guidelines provided.",
+              },
+            ],
+          },
+        ],
       })
     );
   };
@@ -42,67 +68,103 @@ export function useChatSession() {
     setChat(null);
   };
 
-  // Hàm lấy nội dung file TXT
   const fetchTxtFile = async (url: string): Promise<string> => {
-    const response = await fetch(url);
-    return await response.text();
-  };
+    try {
+      const response = await fetch(url);
 
-  // Hàm lấy nội dung file PDF sử dụng pdfjs-dist
-  const fetchPdfFile = async (url: string): Promise<string> => {
-    const loadingTask = pdfjsLib.getDocument(url);
-    const pdf = await loadingTask.promise;
-    let fullText = '';
-    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-      const page = await pdf.getPage(pageNum);
-      const content = await page.getTextContent();
-      const pageText = content.items.map((item: any) => item.str).join(' ');
-      fullText += pageText + '\n';
+      if (!response.ok) {
+        console.warn(`Error loading TXT file: ${response.statusText}`);
+        setFileRetrievalStatus((prev) => ({ ...prev, txt: false }));
+        return "";
+      }
+
+      const text = await response.text();
+      setFileRetrievalStatus((prev) => ({ ...prev, txt: true }));
+      return text;
+    } catch (error) {
+      console.error("Error when loading TXT:", error);
+      setFileRetrievalStatus((prev) => ({ ...prev, txt: false }));
+      return "";
     }
-    return fullText;
   };
 
   const retrieveDocuments = async (query: string): Promise<string[]> => {
     const documentFiles = [
-      { url: '/doc/text.txt', type: 'txt' },
-      { url: 'Front-end/public/doc/text.txt', type: 'pdf' },
-      { url: './text.txt', type: 'txt' },
+      { url: "/doc/text.txt", type: "txt" },
+      { url: "/doc/word.txt", type: "txt" },
+      { url: "/doc/definition.txt", type: "txt" },
     ];
 
-    console.log(documentFiles);
-    
-    // Lấy nội dung của từng file
     const docsContent: string[] = await Promise.all(
       documentFiles.map(async (doc) => {
-        if (doc.type === 'txt') {
+        if (doc.type === "txt") {
           return fetchTxtFile(doc.url);
-        } else if (doc.type === 'pdf') {
-          return fetchPdfFile(doc.url);
         }
-        return '';
+        return "";
       })
     );
 
-    // Lọc nội dung tài liệu dựa trên query
-    return docsContent.filter(content => content.toLowerCase().includes(query.toLowerCase()));
+    const validDocsContent = docsContent.filter(
+      (content) => content.length > 0
+    );
+
+    const relevantDocs = validDocsContent.filter((content) =>
+      content.toLowerCase().includes(query.toLowerCase())
+    );
+    return relevantDocs;
   };
 
-  // Hàm gửi message tích hợp RAG
   const sendMessageWithRAG = async (message: string): Promise<ChatResponse> => {
-    // Lấy tài liệu liên quan dựa trên query
-    const retrievedDocs = await retrieveDocuments(message);
-
-    console.log(retrievedDocs);
-
-    const augmentedMessage = retrievedDocs.length
-      ? `Thông tin tham khảo:\n${retrievedDocs.join("\n")}\n\nCâu hỏi: ${message}`
-      : message;
-
-    if (chat) {
-      return await chat.sendMessage(augmentedMessage);
+    if (!chat) {
+      throw new Error("Chat session not initialized.");
     }
-    throw new Error("Chưa khởi tạo phiên chat.");
+
+    try {
+      const retrievedDocs = await retrieveDocuments(message);
+
+      let augmentedMessage = message;
+      if (retrievedDocs.length > 0) {
+        augmentedMessage = `Reference information:\n${retrievedDocs.join(
+          "\n---\n"
+        )}\n\nUser question: ${message}`;
+      } else {
+        console.log("No relevant documents found for augmentation");
+      }
+
+      return await chat.sendMessage(augmentedMessage);
+    } catch (error) {
+      console.error("Error in sendMessageWithRAG:", error);
+      throw error;
+    }
   };
 
-  return { chat, resetChat, sendMessageWithRAG };
+  const testFileRetrieval = async (): Promise<{
+    txtResult: string | null;
+    success: boolean;
+  }> => {
+    try {
+      const txtPath = "/doc/text.txt";
+      const txtResult = await fetchTxtFile(txtPath);
+      const success = txtResult.length > 0;
+
+      return {
+        txtResult: txtResult || null,
+        success,
+      };
+    } catch (error) {
+      console.error("Error testing file retrieval:", error);
+      return {
+        txtResult: null,
+        success: false,
+      };
+    }
+  };
+
+  return {
+    chat,
+    resetChat,
+    sendMessageWithRAG,
+    fileRetrievalStatus,
+    testFileRetrieval,
+  };
 }
