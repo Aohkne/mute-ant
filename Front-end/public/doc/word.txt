@@ -1,0 +1,376 @@
+ Nhà 🏠
+Cử chỉ tay: Hai bàn tay tạo hình chữ "C" úp xuống, ngón cái và các ngón còn lại tạo thành hình mái nhà.
+Động tác: Hai bàn tay chạm vào nhau phía trên, sau đó tách ra một chút để mô phỏng mái nhà.
+ Xe 🚗
+Cử chỉ tay: Hai tay nắm hờ như đang cầm vô lăng.
+Động tác: Xoay nhẹ cổ tay như đang lái xe.
+ Cửa 🚪
+Cử chỉ tay: Hai bàn tay dựng đứng, lòng bàn tay hướng về nhau như cánh cửa.
+Động tác: Một tay giữ nguyên, tay còn lại mở ra như đang mở cửa.
+ Con 👶
+Cử chỉ tay: Bàn tay phải đặt gần cằm, ngón cái hướng vào trong.
+Động tác: Kéo nhẹ tay ra phía trước để mô phỏng hành động gọi con.
+ Chó 🐕
+Cử chỉ tay: Đưa bàn tay lên má, ngón trỏ và ngón giữa duỗi thẳng như tai chó.
+Động tác: Nhẹ nhàng búng hai ngón tay lên xuống để mô phỏng tai chó vẫy.
+ Bàn
+
+Cử chỉ tay: Hai tay úp xuống, đặt song song trước ngực.
+Động tác: Gõ nhẹ hai tay xuống như đang đặt tay lên bàn.
+ Ghế
+
+Cử chỉ tay: Ngón trỏ và ngón giữa của tay phải cong xuống.
+Động tác: Đặt lên lòng bàn tay trái như đang ngồi xuống ghế.
+ Trường
+
+Cử chỉ tay: Tay phải tạo chữ "L", tay trái giữ nguyên.
+Động tác: Đưa tay phải chạm vào tay trái hai lần để thể hiện nơi học tập.
+ Chợ
+
+Cử chỉ tay: Ngón cái và ngón trỏ tay phải chụm lại như đang cầm tiền.
+Động tác: Mô phỏng động tác đếm tiền hai lần.
+ Cây
+
+Cử chỉ tay: Đưa bàn tay lên trước ngực, các ngón tay xòe ra như tán cây.
+Động tác: Nhẹ nhàng lắc tay để mô phỏng cây rung rinh.
+🚶‍♂️ Hành động & Động từ
+ Ăn
+
+Cử chỉ tay: Đầu ngón tay chụm lại như đang cầm thức ăn.
+Động tác: Đưa tay lên miệng như đang ăn.
+ Uống
+
+Cử chỉ tay: Bàn tay tạo hình chữ "C".
+Động tác: Đưa lên miệng như đang cầm cốc uống nước.
+ Ngủ
+
+Cử chỉ tay: Bàn tay đặt ngang trước mặt, lòng bàn tay hướng vào trong.
+Động tác: Nhẹ nhàng hạ xuống kèm theo nhắm mắt.
+ Chạy
+
+Cử chỉ tay: Hai tay làm động tác như đang chạy.
+Động tác: Chuyển động tay theo kiểu chạy nhanh.
+ Nhảy
+
+Cử chỉ tay: Hai ngón trỏ và giữa của tay phải đặt trên tay trái.
+Động tác: Nhấc hai ngón tay lên như người đang nhảy.
+👩‍👩‍👧‍👦 Gia đình & Con người
+ Bố
+
+Cử chỉ tay: Ngón cái của tay phải đặt lên trán.
+Động tác: Chạm nhẹ hai lần.
+ Mẹ
+
+Cử chỉ tay: Ngón cái của tay phải đặt lên cằm.
+Động tác: Chạm nhẹ hai lần.
+ Anh trai
+
+Cử chỉ tay: Ngón cái tay phải đặt lên thái dương.
+Động tác: Đưa ra phía trước như đang vẽ đường thẳng.
+ Chị gái
+
+Cử chỉ tay: Ngón cái tay phải đặt lên má.
+Động tác: Đưa ra phía trước.
+0️⃣ Em bé
+
+Cử chỉ tay: Hai tay làm động tác bế em bé.
+Động tác: Nhẹ nhàng đung đưa.
+🌱 Thiên nhiên & Môi trường
+ Mặt trời
+
+Cử chỉ tay: Ngón trỏ và ngón cái tạo vòng tròn.
+Động tác: Đưa lên trên đầu để mô phỏng mặt trời.
+ Mưa
+
+Cử chỉ tay: Các ngón tay xòe ra.
+Động tác: Di chuyển tay xuống dưới như hạt mưa rơi.
+ Gió
+
+Cử chỉ tay: Hai tay mở rộng, lòng bàn tay hướng sang hai bên.
+Động tác: Lắc nhẹ cổ tay để mô phỏng gió thổi.
+ Biển
+
+Cử chỉ tay: Bàn tay xòe rộng, lòng bàn tay hướng xuống.
+Động tác: Đưa tay qua lại như sóng biển.
+ Núi
+
+Cử chỉ tay: Hai bàn tay chụm lại thành hình tam giác.
+Động tác: Đưa tay lên cao để mô phỏng đỉnh núi.
+🔢 Số & Thời gian
+ Một – Giơ ngón trỏ.
+ Hai – Giơ ngón trỏ và ngón giữa.
+ Ba – Giơ ba ngón tay.
+ Bốn – Giơ bốn ngón tay.
+0️⃣ Năm – Giơ cả bàn tay.
+
+ Giờ
+
+Cử chỉ tay: Tay phải chỉ vào cổ tay trái như đang xem đồng hồ.
+ Ngày
+
+Cử chỉ tay: Ngón trỏ và ngón giữa gõ vào mu bàn tay.
+ Tháng
+
+Cử chỉ tay: Ngón trỏ kéo dài từ cổ tay lên cẳng tay.
+ Năm
+
+Cử chỉ tay: Nắm tay phải lại và xoay tròn như đồng hồ cát.
+🚀 Công nghệ & Đồ dùng
+ Điện thoại
+
+Cử chỉ tay: Ngón út và ngón cái giơ ra như hình điện thoại.
+Động tác: Đưa tay lên tai như đang nghe máy.
+ Máy tính
+
+Cử chỉ tay: Hai tay đặt trước mặt như đang gõ bàn phím.
+ Internet
+
+Cử chỉ tay: Hai ngón trỏ xoay quanh nhau.
+ Đèn
+
+Cử chỉ tay: Nắm tay rồi mở ra như bật đèn.
+ Ô tô
+
+Cử chỉ tay: Hai tay mô phỏng vô lăng.
+
+🍔 Thức ăn & Đồ uống
+0️⃣ Cơm
+
+Cử chỉ tay: Ngón cái và ngón trỏ tay phải cầm đũa giả định.
+Động tác: Đưa lên miệng như đang ăn cơm.
+ Phở
+
+Cử chỉ tay: Tay phải cầm đũa giả định, tay trái nâng tô.
+Động tác: Húp một miếng như ăn phở.
+ Bánh mì
+
+Cử chỉ tay: Hai tay nắm lại như đang cầm ổ bánh mì.
+Động tác: Đưa lên miệng và nhai nhẹ.
+ Sữa
+
+Cử chỉ tay: Ngón cái và ngón út tay phải giơ ra.
+Động tác: Đưa lên miệng như uống từ chai sữa.
+ Nước
+
+Cử chỉ tay: Ngón trỏ đặt lên cằm.
+Động tác: Đưa lên miệng như đang uống.
+💡 Tính từ & Trạng thái
+ Nóng
+
+Cử chỉ tay: Lòng bàn tay phải hướng vào mặt.
+Động tác: Phẩy tay nhẹ như quạt mát.
+ Lạnh
+
+Cử chỉ tay: Hai tay nắm lại và đặt gần nhau trước ngực.
+Động tác: Rung nhẹ tay như đang run vì lạnh.
+ Vui
+
+Cử chỉ tay: Hai tay xòe ra đặt trước mặt.
+Động tác: Nhẹ nhàng nâng tay lên như đang vui vẻ.
+ Buồn
+
+Cử chỉ tay: Một tay chạm nhẹ vào mặt.
+Động tác: Hạ tay xuống chậm rãi để thể hiện nỗi buồn.
+ Mệt
+
+Cử chỉ tay: Lòng bàn tay chạm nhẹ vào ngực.
+Động tác: Đẩy tay ra nhẹ nhàng như thể hiện sự mệt mỏi.
+🐾 Động vật
+0️⃣ Mèo
+
+Cử chỉ tay: Ngón trỏ và ngón giữa gập lại như ria mèo.
+Động tác: Rung nhẹ ngón tay như ria mèo rung rinh.
+ Gà
+
+Cử chỉ tay: Ngón trỏ và ngón cái chụm lại gần mỏ.
+Động tác: Mở và đóng tay như mỏ gà mổ.
+ Cá
+
+Cử chỉ tay: Bàn tay mở rộng, ngón cái khép vào.
+Động tác: Đưa tay qua lại như cá bơi.
+ Voi
+
+Cử chỉ tay: Cánh tay phải duỗi dài như vòi voi.
+Động tác: Nhẹ nhàng vẫy tay xuống dưới.
+ Chim
+
+Cử chỉ tay: Hai bàn tay khép lại, ngón cái chạm nhau.
+Động tác: Mở và đóng hai tay như cánh chim đập.
+🚦 Giao thông & Phương tiện
+ Xe máy
+
+Cử chỉ tay: Hai tay nắm lại như cầm tay lái xe máy.
+Động tác: Vặn nhẹ tay phải như tăng ga.
+ Xe đạp
+
+Cử chỉ tay: Hai bàn tay đặt trước như nắm ghi đông.
+Động tác: Nhấc lên xuống nhẹ như đang đạp xe.
+ Tàu hỏa
+
+Cử chỉ tay: Hai tay đặt trước mặt song song.
+Động tác: Di chuyển tay tới trước như tàu chạy.
+ Máy bay
+
+Cử chỉ tay: Hai tay dang rộng như cánh máy bay.
+Động tác: Nghiêng tay nhẹ sang hai bên.
+ Tàu thuyền
+
+Cử chỉ tay: Hai tay tạo hình con thuyền.
+Động tác: Đẩy nhẹ tay tới trước như thuyền trôi.
+⌛ Thời gian & Lịch sử
+0️⃣ Hôm nay
+
+Cử chỉ tay: Ngón trỏ chỉ xuống đất.
+Động tác: Nhấn nhẹ tay hai lần.
+ Hôm qua
+
+Cử chỉ tay: Ngón trỏ đặt gần vai.
+Động tác: Đưa ngón trỏ ra sau.
+ Ngày mai
+
+Cử chỉ tay: Ngón trỏ đặt gần cằm.
+Động tác: Đưa ngón trỏ ra trước.
+ Sáng
+
+Cử chỉ tay: Hai tay đặt trước ngực.
+Động tác: Nâng tay lên cao như mặt trời mọc.
+ Tối
+
+Cử chỉ tay: Hai tay đưa lên trên đầu.
+Động tác: Đưa xuống thấp như mặt trời lặn.
+📚 Học tập & Công việc
+ Học
+
+Cử chỉ tay: Một tay đặt trước trán.
+Động tác: Đưa tay ra trước như tiếp thu kiến thức.
+ Viết
+
+Cử chỉ tay: Tay phải cầm giả lập một cây bút.
+Động tác: Viết nhẹ trên tay trái.
+ Đọc
+
+Cử chỉ tay: Hai ngón trỏ và giữa hướng xuống như đôi mắt.
+Động tác: Di chuyển tay nhẹ như đang đọc sách.
+ Giáo viên
+
+Cử chỉ tay: Một tay chạm trán, sau đó đưa xuống.
+Động tác: Đưa ra trước như đang giảng bài.
+ Sinh viên
+
+Cử chỉ tay: Ngón trỏ tay phải chạm vào ngực.
+Động tác: Đưa tay ra trước như thể hiện người học.
+📢 Giao tiếp & Cảm xúc
+0️⃣ Xin chào
+
+Cử chỉ tay: Một tay giơ lên cạnh trán.
+Động tác: Đưa tay ra trước như vẫy chào.
+ Cảm ơn
+
+Cử chỉ tay: Bàn tay đặt trước cằm.
+Động tác: Đưa tay ra trước.
+ Xin lỗi
+
+Cử chỉ tay: Tay phải xoa nhẹ lên lòng bàn tay trái.
+ Vâng
+
+Cử chỉ tay: Nắm tay lại và gật nhẹ.
+ Không
+
+Cử chỉ tay: Ngón trỏ và giữa mở ra.
+Động tác: Lắc nhẹ tay như đang nói "không".
+
+🏡 Đồ vật & Đồ dùng trong nhà
+ Bàn
+
+Cử chỉ tay: Hai bàn tay mở rộng, lòng bàn tay úp xuống.
+Động tác: Đặt tay trước mặt như bề mặt bàn.
+ Ghế
+
+Cử chỉ tay: Hai ngón trỏ và giữa gập lại như chân ghế.
+Động tác: Đưa tay xuống như ngồi.
+ Giường
+
+Cử chỉ tay: Một tay đặt ngang như mặt giường.
+Động tác: Đầu nghiêng nhẹ như đang ngủ.
+ Đèn
+
+Cử chỉ tay: Nắm tay lại, sau đó mở nhanh như bật đèn.
+ Tủ
+
+Cử chỉ tay: Hai tay đặt song song trước ngực.
+Động tác: Mở ra như mở cánh tủ.
+🍎 Thực phẩm & Đồ uống
+0️⃣ Trái cây
+
+Cử chỉ tay: Bàn tay nắm nhẹ như cầm trái cây.
+Động tác: Đưa lên miệng như ăn.
+ Nước ngọt
+
+Cử chỉ tay: Một tay cầm lon, ngón cái bật lên.
+ Cà phê
+
+Cử chỉ tay: Tay phải giả lập cầm tách cà phê.
+Động tác: Đưa lên mũi như ngửi mùi thơm.
+ Trà
+
+Cử chỉ tay: Ngón cái và ngón trỏ tạo vòng tròn như cầm chén trà.
+Động tác: Nhấp môi như uống trà.
+💰 Tiền bạc & Mua sắm
+ Tiền
+
+Cử chỉ tay: Ngón cái và ngón trỏ chụm lại.
+Động tác: Xoa nhẹ hai ngón như đếm tiền.
+ Mua
+
+Cử chỉ tay: Một tay xòe ra, tay kia nắm lại như cầm đồ.
+Động tác: Đưa tay ra như trả tiền.
+ Bán
+
+Cử chỉ tay: Một tay cầm đồ, tay kia đưa ra trước.
+ Ví
+
+Cử chỉ tay: Hai tay tạo hình chữ nhật.
+Động tác: Mở ra như mở ví.
+🛠️ Nghề nghiệp & Công việc
+ Bác sĩ
+
+Cử chỉ tay: Một tay đặt lên cổ tay như đo nhịp tim.
+ Cảnh sát
+
+Cử chỉ tay: Ngón cái và ngón trỏ tạo hình phù hiệu.
+Động tác: Chạm vào ngực như phù hiệu cảnh sát.
+0️⃣ Giáo viên
+
+Cử chỉ tay: Một tay chạm trán, sau đó đưa xuống.
+🌍 Địa điểm & Du lịch
+ Nhà hàng
+
+Cử chỉ tay: Một tay chạm vào miệng, sau đó chỉ sang ngang.
+ Khách sạn
+
+Cử chỉ tay: Hai tay đặt ngang, lòng bàn tay hướng xuống.
+ Sân bay
+
+Cử chỉ tay: Hai tay giơ ra như cánh máy bay.
+ Trường học
+
+Cử chỉ tay: Hai tay vỗ vào nhau như sách mở.
+ Bệnh viện
+
+Cử chỉ tay: Vẽ hình chữ thập trên mu bàn tay.
+📅 Ngày tháng & Thời tiết
+ Mưa
+
+Cử chỉ tay: Các ngón tay mở rộng, di chuyển xuống như giọt mưa.
+ Nắng
+
+Cử chỉ tay: Một tay xoè ra, di chuyển lên như mặt trời mọc.
+ Mùa đông
+
+Cử chỉ tay: Hai tay ôm lấy mình như đang lạnh.
+ Gió
+
+Cử chỉ tay: Hai bàn tay mở, di chuyển sang một bên.
+0️⃣0️⃣ Bão
+
+Cử chỉ tay: Hai tay xoay tròn như cơn lốc.
