@@ -3,13 +3,16 @@ package muteant.muteant.controller;
 import muteant.muteant.model.dto.request.QueryWrapper;
 import muteant.muteant.model.dto.request.BlogRequest;
 import muteant.muteant.model.dto.response.BlogResponse;
+import muteant.muteant.model.dto.response.ProfileResponse;
 import muteant.muteant.model.dto.response.ResponseObject;
 import muteant.muteant.service.BlogService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,26 +26,20 @@ import java.util.List;
 public class BlogController {
     private final BlogService blogService;
 
-    @Operation(summary = "Get all blogs", security = {@SecurityRequirement(name = "accessCookie")})
     @GetMapping
-    public ResponseEntity<ResponseObject<List<BlogResponse>>> getAllBlogs(
-            @RequestParam(required = false) String query,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id,asc") String sort) {
-
-        var pageable = PageRequest.of(page, size, Sort.by(Sort.Order.by(sort.split(",")[0]).with(Sort.Direction.fromString(sort.split(",")[1]))));
-
-        var paginationResult = blogService.getAllBlogs(QueryWrapper.builder()
-                .search(query)
+    @Operation(summary = "Get all blog", description = "This API will return all blogs", security = {
+            @SecurityRequirement(name = "accessCookie")})
+    public ResponseEntity<ResponseObject<List<BlogResponse>>> getAllBlogs(@RequestParam(name = "q", required = false) String query,
+                                                                                @PageableDefault(page = 0, size = 10) Pageable pageable) {
+        var result = blogService.getAllBlogs(QueryWrapper.builder()
                 .wrapSort(pageable)
+                .search(query)
                 .build());
-
         return ResponseEntity.ok(new ResponseObject.Builder<List<BlogResponse>>()
                 .success(true)
                 .code("SUCCESS")
-                .content(paginationResult.getData())
-                .message("Get Success")
+                .unwrapPaginationWrapper(result)
+                .message("Accounts retrieved successfully")
                 .build());
     }
 

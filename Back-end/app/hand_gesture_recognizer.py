@@ -1,46 +1,26 @@
-import os
-import csv
 import copy
-from dataclasses import dataclass
-from typing import List, Tuple, Optional
+import csv
+import threading
+from typing import List, Tuple
 import cv2 as cv
 import numpy as np
 import mediapipe as mp
-from flask import Flask, Response, jsonify, request, stream_with_context
-from flask_cors import CORS
-from Run import WordRecognizer
+
 from utils.cvfpscalc import CvFpsCalc
 from model.keypoint_classifier.keypoint_classifier import KeyPointClassifier
-import keyboard
-import threading
-
-
-# Configuration
-@dataclass
-class Config:
-    DEVICE: int = 0
-    WIDTH: int = 640
-    HEIGHT: int = 460
-    USE_STATIC_IMAGE_MODE: bool = False
-    MIN_DETECTION_CONFIDENCE: float = 0.7
-    MIN_TRACKING_CONFIDENCE: float = 0.5
-    USE_BRECT: bool = True
-    DATASET_DIR: str = "model/dataset/dataset 1"
-    KEYPOINT_CSV_PATH: str = "model/keypoint_classifier/keypoint.csv"
-    CLASSIFIER_LABEL_PATH: str = "model/keypoint_classifier/keypoint_classifier_label.csv"
-
-app = Flask(__name__)
-CORS(app)
+from config import Config
 
 class HandGestureRecognizer:
-    def __init__(self, config: Config):
+    def __init__(self, config: Config, audio_manager):
         self.config = config
+        self.audio_manager = audio_manager
         self.setup_camera()
         self.setup_mediapipe()
         self.setup_classifier()
         self.fps_calculator = CvFpsCalc(buffer_len=10)
         self.mode = 0
         self.number = -1
+        self.last_gestures = []
 
     def setup_camera(self):
         self.cap = cv.VideoCapture(self.config.DEVICE)
@@ -81,7 +61,7 @@ class HandGestureRecognizer:
         
         # Flatten and normalize
         flattened = [coord for point in temp_landmark_list for coord in point]
-        max_value = max(map(abs, flattened))
+        max_value = max(map(abs, flattened)) if flattened else 1.0
         return [n / max_value for n in flattened]
 
     def draw_landmarks(self, image: np.ndarray, landmark_points: List[List[int]]) -> np.ndarray:
@@ -123,15 +103,10 @@ class HandGestureRecognizer:
 
         return image
 
-    def process_frame(self):
-        """Captures a frame and processes hand gesture recognition."""
-        ret, frame = self.cap.read()
-        if not ret:
-            return None, None
-
+    def process_frame(self, frame: np.ndarray) -> Tuple[np.ndarray, List[str]]:
         frame = cv.flip(frame, 1)
         debug_image = copy.deepcopy(frame)
-
+        
         # Process with MediaPipe
         image = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
         image.flags.writeable = False
@@ -139,28 +114,55 @@ class HandGestureRecognizer:
         image.flags.writeable = True
 
         detected_gestures = []
-
+        
         if results.multi_hand_landmarks:
-            for hand_landmarks, handedness in zip(results.multi_hand_landmarks, results.multi_handedness):
+            for hand_landmarks, handedness in zip(
+                results.multi_hand_landmarks, results.multi_handedness
+            ):
                 # Process landmarks
                 landmark_list = self.calc_landmark_list(debug_image, hand_landmarks)
                 processed_landmarks = self.pre_process_landmark(landmark_list)
-
+                
                 # Classify gesture
                 hand_sign_id = self.keypoint_classifier(processed_landmarks)
                 gesture = self.keypoint_classifier_labels[hand_sign_id]
                 detected_gestures.append(gesture)
-
+                
                 # Draw visualizations
                 debug_image = self.draw_landmarks(debug_image, landmark_list)
-
+                
                 # Add text labels
                 brect = self.calc_bounding_rect(debug_image, hand_landmarks)
-                label = f"{handedness.classification[0].label}: {gesture}"
+                label = f"{handedness.classification[0].label[0:]}: {gesture}"
                 cv.putText(debug_image, label, (brect[0] + 5, brect[1] - 4),
-                           cv.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 1, cv.LINE_AA)
+                          cv.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 1, cv.LINE_AA)
+
+        # Check for new gestures and play audio
+        self.check_and_play_audio(detected_gestures)
+        
+        # Add FPS counter
+        fps = self.fps_calculator.get()
+        cv.putText(debug_image, f"FPS: {fps}", (10, 30), cv.FONT_HERSHEY_SIMPLEX,
+                  1.0, (255, 255, 255), 2, cv.LINE_AA)
 
         return debug_image, detected_gestures
+
+    def check_and_play_audio(self, current_gestures: List[str]) -> None:
+        """Check for new gestures and play corresponding audio"""
+        # Check for new gestures that weren't in the previous frame
+        new_gestures = set(current_gestures) - set(self.last_gestures)
+        
+        # Play audio for new gestures
+        for gesture in new_gestures:
+            # Start a new thread to play audio to prevent blocking the video processing
+            threading.Thread(
+                target=self.audio_manager.play_for_gesture,
+                args=(gesture, self.config.SPEECH_COOLDOWN),
+                daemon=True
+            ).start()
+        
+        # Update the last gestures
+        self.last_gestures = current_gestures
 
     @staticmethod
     def calc_bounding_rect(image: np.ndarray, landmarks) -> List[int]:
@@ -171,100 +173,3 @@ class HandGestureRecognizer:
         ] for landmark in landmarks.landmark])
         
         return cv.boundingRect(landmark_array)
-
-
-# Initialize Recognizers
-config=Config()
-word_recognizer = WordRecognizer()
-hand_recognizer = HandGestureRecognizer(config)
-
-# Default mode
-current_mode = "words"  # Can be "letters" or "words"
-mode_changed = False  # Flag to restart generator when mode changes
-streaming_active = True  # Flag to control streaming
-
-
-def listen_for_keypress():
-    """Listens for the 'M' key to toggle between modes."""
-    global current_mode, mode_changed, streaming_active
-
-    def toggle_mode():
-        """Toggle function that runs only once per key press."""
-        global current_mode, mode_changed, streaming_active
-        current_mode = "words" if current_mode == "letters" else "letters"
-        mode_changed = True
-        streaming_active = False
-        print(f"Switched to {current_mode} mode")
-
-    keyboard.add_hotkey("m", toggle_mode)
-
-    # Keep the thread running
-    keyboard.wait()
-
-
-# Start key listener in a separate thread
-key_thread = threading.Thread(target=listen_for_keypress, daemon=True)
-key_thread.start()
-
-
-def restart_camera():
-    """Releases and re-initializes the correct recognizer's camera when switching modes."""
-    global current_mode, word_recognizer, hand_recognizer
-
-    print(f"Restarting camera for mode: {current_mode}")
-
-    # 🔥 Release the current camera before switching
-    if current_mode == "words":
-        hand_recognizer.release()
-        word_recognizer.cap = cv.VideoCapture(0)
-    else:
-        word_recognizer.release()
-        hand_recognizer.cap = cv.VideoCapture(0)
-
-
-def generate_frames():
-    """Continuously generates frames and restarts when mode is changed."""
-    global current_mode, mode_changed, streaming_active
-
-    while streaming_active:
-        if mode_changed:
-            print(f"Restarting stream with mode: {current_mode}")
-            restart_camera()
-            mode_changed = False
-            break
-
-        # Select Recognizer Based on Mode
-        if current_mode == "letters":
-            image, detected_gestures = hand_recognizer.process_frame()
-        else:
-            image, sentence = word_recognizer.process_frame()
-
-        if image is None:
-            break
-
-        # Encode & Stream
-        ret, buffer = cv.imencode('.jpg', image)
-        frame = buffer.tobytes()
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-
-    print("Stream stopped. Waiting for mode change...")
-
-
-@app.route('/video_feed')
-def video_feed():
-    """Video streaming route with auto-restarting generator."""
-    global streaming_active
-    streaming_active = True  # Ensure streaming restarts
-    return Response(stream_with_context(generate_frames()),
-                    mimetype='multipart/x-mixed-replace; boundary=frame')
-
-
-@app.route('/status')
-def status():
-    """Check current mode."""
-    return jsonify({"status": "running", "mode": current_mode})
-
-
-if __name__ == '__main__':
-    app.run(debug=True, port=5000)
