@@ -5,14 +5,15 @@ import { ModeToggle } from "@/components/ui/mode-toggle";
 import classNames from "classnames/bind";
 import styles from "./Register.module.scss";
 import Image from "next/image";
-import { Eye, EyeClosed, LockKeyhole, UserRound } from "lucide-react";
+import { Eye, EyeClosed, LockKeyhole, Recycle, UserRound } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
 
 const cx = classNames.bind(styles);
 
-export default function Login() {
+export default function Register() {
   const [showPass, setShowPass] = useState(false);
+  const [showConPass, setShowConPass] = useState(false);
 
   return (
     <div className={cx("wrapper")}>
@@ -72,16 +73,54 @@ export default function Login() {
               {showPass ? <Eye /> : <EyeClosed />}
             </span>
           </div>
+
+          <div
+            className={cx(
+              "input-container",
+              "text-description",
+              "border-gradient-3"
+            )}
+          >
+            <LockKeyhole className={cx("icon")} />
+            <input
+              placeholder="Confirm Password"
+              className={cx("text-description")}
+              type={showConPass ? "text" : "password"}
+              name="confirm-password"
+            />
+            <span
+              className={cx("icon-eye")}
+              onClick={() => setShowConPass(!showConPass)}
+            >
+              {showConPass ? <Eye /> : <EyeClosed />}
+            </span>
+          </div>
+
+          <div
+            className={cx(
+              "input-container",
+              "text-description",
+              "border-gradient-3"
+            )}
+          >
+            <Recycle className={cx("icon")} />
+            <input
+              placeholder="Captcha"
+              className={cx("text-description")}
+              type="text"
+              name="captcha"
+            />
+          </div>
         </form>
 
         <button className={cx("btn", "bg-gradient-3")}>
-          <span>SIGN IN</span>
+          <span>SIGN UP</span>
         </button>
 
         <div className={cx("action", "text-description")}>
-          Not a member?
+          Join us?
           <Link href={"/login"} className={cx("text-gradient-3")}>
-            Sign up now
+            Sign in here
           </Link>
         </div>
       </div>
