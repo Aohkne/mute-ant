@@ -27,6 +27,7 @@
     "class-variance-authority": "^0.7.0",
     "classnames": "^2.5.1",
     "clsx": "^2.1.1",
+    "googleapis": "^146.0.0",
     "i": "^0.3.7",
     "lucide-react": "^0.460.0",
     "next": "15.0.3",
@@ -41,7 +42,8 @@
     "sass": "^1.81.0",
     "tailwind-merge": "^2.5.4",
     "tailwindcss-animate": "^1.0.7",
-    "typed.js": "^2.1.0"
+    "typed.js": "^2.1.0",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@types/node": "^20",
