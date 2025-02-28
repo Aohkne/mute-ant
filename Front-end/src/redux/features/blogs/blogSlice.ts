@@ -48,7 +48,14 @@ export const fetchBlogs = createAsyncThunk(
         `${process.env.NEXT_PUBLIC_API_URL}/blogs?page=${page}&size=10&sort=id,asc`
       );
 
-      return response.data;
+      if (response.data.success) {
+        return {
+          blogs: response.data.content,
+          pagination: response.data.pagination,
+        };
+      } else {
+        return rejectWithValue("Failed to fetch blogs");
+      }
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
@@ -67,7 +74,7 @@ const blogSlice = createSlice({
       })
       .addCase(fetchBlogs.fulfilled, (state, action: PayloadAction<any>) => {
         state.loading = false;
-        state.blogs = action.payload.content;
+        state.blogs = action.payload.blogs;
         state.pagination = action.payload.pagination;
       })
       .addCase(fetchBlogs.rejected, (state, action) => {
