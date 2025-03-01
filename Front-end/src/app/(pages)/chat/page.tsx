@@ -38,6 +38,8 @@ const Chatbot: React.FC = () => {
   }, [history]);
 
   async function chatting(): Promise<void> {
+    if (!input.trim()) return;
+
     setLoading(true);
     setHistory((oldHistory) => [
       ...oldHistory,
@@ -50,7 +52,9 @@ const Chatbot: React.FC = () => {
         parts: "Thinking...",
       },
     ]);
+    const userInput = input;
     setInput("");
+
     try {
       if (!chat) {
         setLoading(false);
@@ -66,7 +70,7 @@ const Chatbot: React.FC = () => {
       }
 
       // Use sendMessageWithRAG instead of sendMessage directly
-      const result = await sendMessageWithRAG(input);
+      const result = await sendMessageWithRAG(userInput);
       const response = await result.response;
       const text = response.text();
 
@@ -80,17 +84,17 @@ const Chatbot: React.FC = () => {
         const newHistory = oldHistory.slice(0, oldHistory.length - 1);
         newHistory.push({
           role: "model",
-          parts: "Oops! Something went wrong.",
+          parts: "Oops! Đã xảy ra lỗi. Vui lòng thử lại.",
         });
         return newHistory;
       });
       setLoading(false);
-      console.error(error);
+      console.error("Chat error:", error);
     }
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>): void {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       chatting();
     }
@@ -176,33 +180,33 @@ const Chatbot: React.FC = () => {
                 </div>
               ))}
             </div>
-
-            <div className={cx("input-container")}>
-              <button className={cx("reset-button")} onClick={reset}>
-                <Trash className={cx("icon-small")} />
-              </button>
-              <textarea
-                value={input}
-                rows={1}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="Start Chatting..."
-                className={cx("chat-input", "text-title")}
-              />
-              <button
-                className={cx("send-button", {
-                  loading: loading,
-                })}
-                onClick={chatting}
-                disabled={loading}
-              >
-                {loading ? (
-                  <span className={cx("spinner")} />
-                ) : (
-                  <Send className={cx("icon-small")} />
-                )}
-              </button>
-            </div>
+          <div className={cx("input-container")}>
+            <button className={cx("reset-button")} onClick={reset}>
+              <Trash className={cx("icon-small")} />
+            </button>
+            <textarea
+              value={input}
+              spellCheck={false}
+              rows={1}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Bắt đầu trò chuyện..."
+              className={cx("chat-input", "text-title")}
+              lang="vi"
+            />
+            <button
+              className={cx("send-button", {
+                loading: loading,
+              })}
+              onClick={chatting}
+              disabled={loading || !input.trim()}
+            >
+              {loading ? (
+                <span className={cx("spinner")} />
+              ) : (
+                <Send className={cx("icon-small")} />
+              )}
+            </button>
           </div>
         </main>
       </div>

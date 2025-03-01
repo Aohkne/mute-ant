@@ -1,6 +1,8 @@
 {
   "dependencies": {
     "@google/generative-ai": "^0.21.0",
-    "react-markdown": "^9.0.1"
+    "googleapis": "^146.0.0",
+    "react-markdown": "^9.0.1",
+    "uuid": "^11.1.0"
   }
 }
