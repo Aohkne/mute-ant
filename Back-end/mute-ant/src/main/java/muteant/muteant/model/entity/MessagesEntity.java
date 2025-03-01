@@ -12,7 +12,7 @@ import lombok.*;
 @Builder
 public class MessagesEntity extends BaseEntity {
 
-    @OneToOne(targetEntity = ConversationsEntity.class, fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST})
+    @ManyToOne(targetEntity = ConversationsEntity.class, fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST})
     @JoinColumn(name = "conversation_id", nullable = false)
     private ConversationsEntity conversationsId;
 
