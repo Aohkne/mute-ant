@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
-import { Send, Trash } from "lucide-react";
+import { Send, SquarePlus } from "lucide-react";
 import Markdown from "react-markdown";
 import classNames from "classnames/bind";
 import styles from "./Chat.module.scss";
@@ -180,9 +180,11 @@ const Chatbot: React.FC = () => {
                 </div>
               ))}
             </div>
+          </div>
+
           <div className={cx("input-container")}>
             <button className={cx("reset-button")} onClick={reset}>
-              <Trash className={cx("icon-small")} />
+              <SquarePlus className={cx("icon-small")} />
             </button>
             <textarea
               value={input}
