@@ -4,42 +4,20 @@ import styles from "./Blog.module.scss";
 import classNames from "classnames/bind";
 const cx = classNames.bind(styles);
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Card from "@/components/Card/Card";
 
-interface Blog {
-  id: number;
-  img: string;
-  title: string;
-  author: string;
-  date?: string;
-  content?: string;
-  source?: string;
-}
+import { useSelector, useDispatch } from "react-redux";
+import { fetchBlogs } from "@/redux/features/blogs";
+import { RootState, AppDispatch } from "@/redux/store";
 
 function Blog() {
-  const [blogs, setBlogs] = useState<Blog[]>([]); // Lưu trữ dữ liệu blog
-  const [loading, setLoading] = useState<boolean>(true); // Trạng thái loading
+  const dispatch = useDispatch<AppDispatch>();
+  const { blogs } = useSelector((state: RootState) => state.blogs);
 
   useEffect(() => {
-    // Lấy dữ liệu từ API
-    async function fetchBlogs() {
-      try {
-        const res = await fetch("/api/blog");
-        const data = await res.json();
-        setBlogs(data); // Cập nhật dữ liệu blog
-      } catch (error) {
-        console.error("Failed to fetch blogs:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchBlogs();
-  }, []);
-
-  if (loading) {
-    return <div className={cx("text-center")}>Loading...</div>;
-  }
+    dispatch(fetchBlogs(0));
+  }, [dispatch]);
 
   return (
     <div className={cx("wrapper", "text-center", "px-10", "py-5")}>
@@ -70,9 +48,10 @@ function Blog() {
             >
               <Card
                 id={blog.id}
-                img={blog.img}
+                img={blog.thumbnail}
                 title={blog.title}
                 author={blog.author}
+                description={blog.description}
               />
             </div>
           ))}

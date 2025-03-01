@@ -133,6 +133,13 @@ html ::-webkit-scrollbar-track {
     --username-profile: #888;
     --title-profile: #759bce;
 
+    /* Chat */
+    --icon-chat: var(--white);
+    --chat-bg: #242424;
+    --navChat-background: #f9f9f9;
+    --item-chat: #333;
+    --item-background-hover: #e3e3e3;
+
     /*Variable*/
     --border-accordion: #2f3a4a;
     --scroll-bar: #00000026;
@@ -140,9 +147,6 @@ html ::-webkit-scrollbar-track {
     --tag-shadow: #00000040;
     --box-shadow: #242424;
 
-    --icon-chat: var(--white);
-
-    --chat-bg: #242424;
     --background-camera: #fff;
     --background-side: #ffffffa8;
     --background-subside: #ffffff;
@@ -268,6 +272,13 @@ html ::-webkit-scrollbar-track {
     --username-profile: #ccc;
     --title-profile: #759bce;
 
+    /* Chat */
+    --icon-chat: #d07e88;
+    --chat-bg: #3d3d3d;
+    --navChat-background: #171717;
+    --item-chat: #d2d2d2;
+    --item-background-hover: #2f2f2f;
+
     /*Variable*/
     --border-accordion: #d2d2d2;
     --scroll-bar: #d2d2d2;
@@ -275,9 +286,6 @@ html ::-webkit-scrollbar-track {
     --tag-shadow: #fff;
     --box-shadow: #d2d2d2;
 
-    --icon-chat: #d07e88;
-
-    --chat-bg: #3d3d3d;
     --background-camera: #121212;
     --background-side: #252525a8;
     --background-subside: #242424;

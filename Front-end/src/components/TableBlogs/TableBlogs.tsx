@@ -6,6 +6,7 @@ import Panel from "@/components/Panel/Panel";
 import Image from "next/image";
 import { LibraryBig } from "lucide-react";
 import { toast } from "react-toastify";
+import { Eye, Trash2 } from "lucide-react";
 
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
@@ -20,6 +21,11 @@ import { fetchBlogs } from "@/redux/features/blogs/blogSlice";
 
 import { postNewBlog, resetPostState } from "@/redux/features/blogs";
 import { editBlog, resetEditState } from "@/redux/features/blogs/editSlice";
+
+import {
+  deleteBlog,
+  resetDeleteState,
+} from "@/redux/features/blogs/deleteSlice";
 
 import styles from "./TableBlogs.module.scss";
 import classNames from "classnames/bind";
@@ -70,21 +76,21 @@ function TableBlogs() {
     content: editingBlog?.content || "",
   });
 
-  // GET Blogs
   useEffect(() => {
     if (editor && editingBlog.content) {
       editor.commands.setContent(editingBlog.content);
     }
   }, [editingBlog.content, editor]);
 
+  // GET Blogs
   const dispatch = useDispatch<AppDispatch>();
   const { blogs, loading, error, pagination } = useSelector(
     (state: RootState) => state.blogs
   );
 
   useEffect(() => {
-    dispatch(fetchBlogs(pagination?.page));
-  }, [dispatch, pagination?.page]);
+    dispatch(fetchBlogs(currentPage - 1));
+  }, [dispatch, currentPage]);
 
   // POST Blog
   const { success } = useSelector((state: RootState) => state.postBlogs);
@@ -94,6 +100,12 @@ function TableBlogs() {
     (state: RootState) => state.editBlog
   );
 
+  // Delete Blog
+  const { success: deleteSuccess } = useSelector(
+    (state: RootState) => state.deleteBlog
+  );
+
+  // Dispatch Edit & Create Blog
   useEffect(() => {
     if (success || editSuccess) {
       toast.success(
@@ -116,27 +128,42 @@ function TableBlogs() {
     }
   }, [success, editSuccess, dispatch, pagination?.page]);
 
+  // Dispatch Delete Blog
+  useEffect(() => {
+    if (deleteSuccess) {
+      toast.success("Blog deleted successfully!");
+      dispatch(fetchBlogs(pagination?.page));
+      dispatch(resetDeleteState());
+    }
+  }, [deleteSuccess, dispatch, pagination?.page]);
+
+  const handleDelete = (id: number) => {
+    if (window.confirm("Are you sure you want to delete this blog?")) {
+      dispatch(deleteBlog(id));
+    }
+  };
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
-  // Lọc blog theo trạng thái và search theo title, author
+  // Filter: status và search: title, author
   const filteredBlogs = blogs.filter((blog) => {
-    const matchesStatus = filterStatus ? blog.status === filterStatus : true;
+    const matchesStatus =
+      filterStatus !== ""
+        ? blog.status?.toLowerCase() === filterStatus.toLowerCase()
+        : true;
+
     const matchesSearch = searchTerm
       ? blog.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         blog.author.toLowerCase().includes(searchTerm.toLowerCase())
       : true;
+
     return matchesStatus && matchesSearch;
   });
 
-  const totalBlogs = filteredBlogs.length;
-  const totalPages = Math.ceil(totalBlogs / itemsPerPage);
-  const displayedBlogs = filteredBlogs.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+  const displayedBlogs = filteredBlogs;
 
-  // Mở modal để chỉnh sửa blog hiện có
+  //Open Model
   const handleEdit = (blog: Blog) => {
     setEditingBlog(blog);
 
@@ -145,7 +172,7 @@ function TableBlogs() {
     setModalOpen(true);
   };
 
-  // Mở modal để thêm mới blog
+  // Open Modal for add new
   const handleAddNew = () => {
     setEditingBlog({
       title: "",
@@ -176,16 +203,16 @@ function TableBlogs() {
     if (editor) editor.commands.setContent("");
   };
 
-  // Khi lưu, cập nhật hoặc thêm blog mới vào mảng blogs
   const handleModalSave = () => {
     if (editingBlog) {
       const updatedContent = editor?.getHTML() || "";
       const updatedBlog = { ...editingBlog, content: updatedContent || "" };
 
       if (updatedBlog.id) {
-        // Chuyển đổi id thành string
+        // Update
         dispatch(editBlog(updatedBlog));
       } else {
+        // Create
         dispatch(postNewBlog(updatedBlog));
       }
 
@@ -197,20 +224,27 @@ function TableBlogs() {
   const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      const url = URL.createObjectURL(file);
+
+      URL.createObjectURL(file);
+      const url = `/images/blog/${file.name}`;
+
       setEditingBlog((prev) => {
         if (prev.thumbnail) {
           URL.revokeObjectURL(prev.thumbnail);
         }
         return { ...prev, thumbnail: url };
       });
+
+      console.log(editingBlog);
     }
   };
 
   const handleImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      const filesArray = Array.from(e.target.files).map((file) =>
-        URL.createObjectURL(file)
+      const filesArray = Array.from(e.target.files).map(
+        (file) =>
+          // URL.createObjectURL(file)
+          `/images/blog/${file.name}`
       );
       setEditingBlog((prev) => {
         prev.images.forEach((url) => URL.revokeObjectURL(url));
@@ -226,7 +260,7 @@ function TableBlogs() {
           type="blog"
           title="Blogs"
           icon={<LibraryBig size={30} />}
-          total={totalBlogs}
+          total={pagination.totalPages}
         />
       </div>
       <div className={cx("wrapper")}>
@@ -269,9 +303,17 @@ function TableBlogs() {
                 <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
                 <td>{blog.title}</td>
                 <td>{blog.author}</td>
-                <td>{blog.status}</td>
+                <td>{blog.status?.toUpperCase()}</td>
                 <td>
-                  <button onClick={() => handleEdit(blog)}>View</button>
+                  <button onClick={() => handleEdit(blog)}>
+                    <Eye size={20} />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(blog.id)}
+                    style={{ marginLeft: "10px", color: "red" }}
+                  >
+                    <Trash2 size={20} />
+                  </button>
                 </td>
               </tr>
             ))}
@@ -287,10 +329,10 @@ function TableBlogs() {
             Prev
           </button>
           <span>
-            Page {currentPage} of {totalPages}
+            Page {pagination.page + 1} of {pagination.totalElements}
           </span>
           <button
-            disabled={currentPage === totalPages}
+            disabled={pagination.page + 1 === pagination.totalElements}
             onClick={() => setCurrentPage((prev) => prev + 1)}
           >
             Next

@@ -105,7 +105,6 @@ public class BlogController {
 
     @Operation(summary = "Delete a blog by ID", security = {@SecurityRequirement(name = "accessCookie")})
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ResponseObject<Void>> deleteBlog(@PathVariable Long id) {
         blogService.deleteBlog(id);
         return ResponseEntity.ok(new ResponseObject.Builder<Void>()

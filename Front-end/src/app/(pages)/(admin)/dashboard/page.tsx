@@ -19,6 +19,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/redux/store";
 import { fetchUsers } from "@/redux/features/accounts";
+import { fetchBlogs } from "@/redux/features/blogs";
 
 //Chart
 const chartConfig = {
@@ -41,6 +42,8 @@ const chartData = [
 
 function Dashbroad() {
   const dispatch = useDispatch<AppDispatch>();
+
+  // GET User
   const { totalPages } = useSelector((state: RootState) => state.accounts);
 
   useEffect(() => {
@@ -54,6 +57,13 @@ function Dashbroad() {
       })
     );
   }, [dispatch]);
+
+  // GET Blogs
+  const { pagination } = useSelector((state: RootState) => state.blogs);
+  const currentPage = 1;
+  useEffect(() => {
+    dispatch(fetchBlogs(currentPage - 1));
+  }, [dispatch, currentPage]);
 
   return (
     <div className={cx("wrapper")}>
@@ -71,7 +81,7 @@ function Dashbroad() {
           type="blog"
           title="Blogs"
           icon={<LibraryBig size={30} />}
-          total={10}
+          total={pagination.totalPages}
         />
         <Panel
           type="request"

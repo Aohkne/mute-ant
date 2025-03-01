@@ -1,0 +1,92 @@
+@import "../../styles/mixin.scss";
+
+.toggle {
+  cursor: pointer;
+  padding: 10px 15px;
+}
+
+.nav {
+  background-color: var(--navChat-background);
+  padding: 10px 15px;
+  height: 100vh;
+  width: 250px;
+  transition: 0.3s linear;
+  position: relative;
+  overflow-y: auto;
+
+  &.open {
+    transform: translateX(0);
+    display: block;
+  }
+
+  &.open .toggle-icon {
+    left: 220px;
+  }
+
+  &:not(.open) {
+    transform: translateX(-100%);
+    display: none;
+  }
+
+  .header-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+
+    .toggle-icon {
+      cursor: pointer;
+      padding: 4px;
+      transition: left 0.3s;
+    }
+
+    .title {
+      font-size: 2rem;
+      font-weight: bold;
+    }
+  }
+
+  .history-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    .history-item {
+      font-size: 1.5rem;
+      border-radius: 4px;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+      color: var(--item-chat);
+      font-weight: 500;
+      cursor: pointer;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      transition: background-color 0.3s, transform 0.2s;
+
+      &:hover {
+        transform: translateY(-2px);
+        background-color: var(--item-background-hover);
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+    }
+  }
+
+  @include respond-above(md) {
+    width: 200px;
+
+    &.open .toggle-icon {
+      left: 170px;
+    }
+  }
+
+  @include respond-above(xs) {
+    width: 180px;
+
+    &.open .toggle-icon {
+      left: 150px;
+    }
+  }
+}
