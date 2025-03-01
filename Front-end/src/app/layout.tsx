@@ -32,7 +32,10 @@ export default function RootLayout({
   }, []);
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="vi" suppressHydrationWarning>
+      <head>
+        <meta charSet="UTF-8" />
+      </head>
       <body className={`${poppins.variable} antialiased`}>
         <Providers>
           <ThemeProvider

@@ -38,6 +38,7 @@
   display: flex;
 
   .nav-item {
+    width: 100%;
     a {
       font-size: 2rem;
       font-weight: 700;
@@ -49,6 +50,7 @@
 
       @include respond-above(md) {
         display: block;
+        text-align: center;
         font-size: 1.8rem;
         font-weight: 700;
         margin: 20px 0px;

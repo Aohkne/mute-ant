@@ -6,6 +6,7 @@ import Panel from "@/components/Panel/Panel";
 import Image from "next/image";
 import { LibraryBig } from "lucide-react";
 import { toast } from "react-toastify";
+import { Eye, Trash2 } from "lucide-react";
 
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
@@ -20,6 +21,11 @@ import { fetchBlogs } from "@/redux/features/blogs/blogSlice";
 
 import { postNewBlog, resetPostState } from "@/redux/features/blogs";
 import { editBlog, resetEditState } from "@/redux/features/blogs/editSlice";
+
+import {
+  deleteBlog,
+  resetDeleteState,
+} from "@/redux/features/blogs/deleteSlice";
 
 import styles from "./TableBlogs.module.scss";
 import classNames from "classnames/bind";
@@ -94,6 +100,12 @@ function TableBlogs() {
     (state: RootState) => state.editBlog
   );
 
+  // Delete Blog
+  const { success: deleteSuccess } = useSelector(
+    (state: RootState) => state.deleteBlog
+  );
+
+  // Dispatch Edit & Create Blog
   useEffect(() => {
     if (success || editSuccess) {
       toast.success(
@@ -115,6 +127,21 @@ function TableBlogs() {
       dispatch(fetchBlogs(pagination?.page));
     }
   }, [success, editSuccess, dispatch, pagination?.page]);
+
+  // Dispatch Delete Blog
+  useEffect(() => {
+    if (deleteSuccess) {
+      toast.success("Blog deleted successfully!");
+      dispatch(fetchBlogs(pagination?.page));
+      dispatch(resetDeleteState());
+    }
+  }, [deleteSuccess, dispatch, pagination?.page]);
+
+  const handleDelete = (id: number) => {
+    if (window.confirm("Are you sure you want to delete this blog?")) {
+      dispatch(deleteBlog(id));
+    }
+  };
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
@@ -276,9 +303,17 @@ function TableBlogs() {
                 <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
                 <td>{blog.title}</td>
                 <td>{blog.author}</td>
-                <td>{blog.status}</td>
+                <td>{blog.status?.toUpperCase()}</td>
                 <td>
-                  <button onClick={() => handleEdit(blog)}>View</button>
+                  <button onClick={() => handleEdit(blog)}>
+                    <Eye size={20} />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(blog.id)}
+                    style={{ marginLeft: "10px", color: "red" }}
+                  >
+                    <Trash2 size={20} />
+                  </button>
                 </td>
               </tr>
             ))}

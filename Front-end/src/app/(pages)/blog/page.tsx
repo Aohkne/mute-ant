@@ -9,39 +9,37 @@ import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer";
 import Card from "@/components/Card/Card";
 
-interface Blog {
-  id: number;
-  img: string;
-  title: string;
-  author: string;
-  date?: string;
-  content?: string;
-  source?: string;
-}
+import { useSelector, useDispatch } from "react-redux";
+import { fetchBlogs } from "@/redux/features/blogs";
+import { RootState, AppDispatch } from "@/redux/store";
 
 function Blog() {
-  const [blogs, setBlogs] = useState<Blog[]>([]); // Lưu trữ dữ liệu blog
-  const [loading, setLoading] = useState<boolean>(true); // Trạng thái loading
+  const dispatch = useDispatch<AppDispatch>();
+  const { blogs, loading, pagination } = useSelector(
+    (state: RootState) => state.blogs
+  );
+  const [currentPage, setCurrentPage] = useState(0);
 
   useEffect(() => {
-    // Lấy dữ liệu từ API
-    async function fetchBlogs() {
-      try {
-        const res = await fetch("/api/blog");
-        const data = await res.json();
-        setBlogs(data); // Cập nhật dữ liệu blog
-      } catch (error) {
-        console.error("Failed to fetch blogs:", error);
-      } finally {
-        setLoading(false);
-      }
+    dispatch(fetchBlogs(currentPage));
+  }, [dispatch, currentPage]);
+
+  const handleNextPage = () => {
+    if (currentPage < pagination.totalElements - 1) {
+      setCurrentPage((prevPage) => prevPage + 1);
     }
-    fetchBlogs();
-  }, []);
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 0) {
+      setCurrentPage((prevPage) => prevPage - 1);
+    }
+  };
 
   if (loading) {
     return <div className={cx("text-center")}>Loading...</div>;
   }
+
   return (
     <div>
       <div className={cx("px-10")}>
@@ -68,12 +66,53 @@ function Blog() {
               <div key={blog.id}>
                 <Card
                   id={blog.id}
-                  img={blog.img}
+                  img={blog.thumbnail}
                   title={blog.title}
                   author={blog.author}
+                  description={blog.description}
                 />
               </div>
             ))}
+        </div>
+
+        {/* Phân trang */}
+        <div className={cx("pagination")}>
+          <button
+            onClick={handlePreviousPage}
+            disabled={currentPage === 0}
+            className={cx(
+              "px-3",
+              "py-1",
+              "bg-gray-300",
+              "hover:bg-gray-400",
+              "rounded",
+              "mr-2",
+              currentPage === 0 && "opacity-50 cursor-not-allowed"
+            )}
+          >
+            Previous
+          </button>
+
+          <span>
+            Page {currentPage + 1} of {pagination.totalElements}
+          </span>
+
+          <button
+            onClick={handleNextPage}
+            disabled={currentPage >= pagination.totalElements - 1}
+            className={cx(
+              "px-3",
+              "py-1",
+              "bg-gray-300",
+              "hover:bg-gray-400",
+              "rounded",
+              "ml-2",
+              currentPage >= pagination.totalElements - 1 &&
+                "opacity-50 cursor-not-allowed"
+            )}
+          >
+            Next
+          </button>
         </div>
       </div>
 
