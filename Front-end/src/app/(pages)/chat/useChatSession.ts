@@ -30,7 +30,7 @@ export function useChatSession() {
 
   const template =
     process.env.NEXT_PUBLIC_TEMPLATE ||
-    "You are Mute-ant, an assistant specifically designed for the deaf and mute...";
+    "Nice to meet you. I'm mute-ant, your chatbot. Do you have any questions about deafness, sign language?";
 
   useEffect(() => {
     if (!sessionId) {
