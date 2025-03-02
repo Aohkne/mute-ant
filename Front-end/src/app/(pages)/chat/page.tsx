@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
-import { Send, SquarePlus } from "lucide-react";
-import Markdown from "react-markdown";
+import { Send, Trash } from "lucide-react";
 import classNames from "classnames/bind";
 import styles from "./Chat.module.scss";
 import Image from "next/image";
@@ -9,7 +8,6 @@ import { useChatSession } from "./useChatSession";
 
 import Header from "@/components/Header/Header";
 import NavChat from "@/components/NavChat/NavChat";
-
 const cx = classNames.bind(styles);
 
 interface MessageItem {
@@ -24,7 +22,7 @@ const Chatbot: React.FC = () => {
     {
       role: "model",
       parts:
-        "Rất hân hạnh được gặp bạn. Mình là mute-ant, chatbot của bạn. Bạn có muốn hỏi gì về khiếm thính, ngôn ngữ kí hiệu không?",
+        "Nice to meet you. I'm mute-ant, your chatbot. Do you have any questions about deafness, sign language?",
     },
   ]);
   const messageContainerRef = useRef<HTMLDivElement | null>(null);
@@ -69,7 +67,6 @@ const Chatbot: React.FC = () => {
         return;
       }
 
-      // Use sendMessageWithRAG instead of sendMessage directly
       const result = await sendMessageWithRAG(userInput);
       const response = await result.response;
       const text = response.text();
@@ -84,7 +81,7 @@ const Chatbot: React.FC = () => {
         const newHistory = oldHistory.slice(0, oldHistory.length - 1);
         newHistory.push({
           role: "model",
-          parts: "Oops! Đã xảy ra lỗi. Vui lòng thử lại.",
+          parts: "Oops! Something went wrong. Please try again.",
         });
         return newHistory;
       });
@@ -105,7 +102,7 @@ const Chatbot: React.FC = () => {
       {
         role: "model",
         parts:
-          "Rất hân hạnh được gặp bạn. Mình là mute-ant, chatbot của bạn. Bạn có muốn hỏi gì về khiếm thính, ngôn ngữ kí hiệu không?",
+          "Nice to meet you. I'm mute-ant, your chatbot. Do you have any questions about deafness, sign language?",
       },
     ]);
     setInput("");
@@ -113,7 +110,7 @@ const Chatbot: React.FC = () => {
   }
 
   function handleSelectHistory(index: number): void {
-    alert(`Bạn đã chọn lịch sử chat ${index + 1}`);
+    alert(`You choose the chat history ${index + 1}`);
   }
 
   return (
@@ -149,7 +146,7 @@ const Chatbot: React.FC = () => {
                       })}
                     >
                       <Image
-                        alt={item.role === "model" ? "Gemini" : "User"}
+                        alt={item.role === "model" ? "Mute-ant" : "User"}
                         src={
                           item.role === "model"
                             ? "/images/ant.png"
@@ -174,41 +171,40 @@ const Chatbot: React.FC = () => {
                           : "chat-text-bot"
                       )}
                     >
-                      <Markdown>{item.parts}</Markdown>
+                      {item.parts}
                     </div>
                   </div>
                 </div>
               ))}
             </div>
-          </div>
-
-          <div className={cx("input-container")}>
-            <button className={cx("reset-button")} onClick={reset}>
-              <SquarePlus className={cx("icon-small")} />
-            </button>
-            <textarea
-              value={input}
-              spellCheck={false}
-              rows={1}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Bắt đầu trò chuyện..."
-              className={cx("chat-input", "text-title")}
-              lang="vi"
-            />
-            <button
-              className={cx("send-button", {
-                loading: loading,
-              })}
-              onClick={chatting}
-              disabled={loading || !input.trim()}
-            >
-              {loading ? (
-                <span className={cx("spinner")} />
-              ) : (
-                <Send className={cx("icon-small")} />
-              )}
-            </button>
+            <div className={cx("input-container")}>
+              <button className={cx("reset-button")} onClick={reset}>
+                <Trash className={cx("icon-small")} />
+              </button>
+              <textarea
+                value={input}
+                spellCheck={false}
+                rows={1}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Start chatting..."
+                className={cx("chat-input", "text-title")}
+                lang="vi"
+              />
+              <button
+                className={cx("send-button", {
+                  loading: loading,
+                })}
+                onClick={chatting}
+                disabled={loading || !input.trim()}
+              >
+                {loading ? (
+                  <span className={cx("spinner")} />
+                ) : (
+                  <Send className={cx("icon-small")} />
+                )}
+              </button>
+            </div>
           </div>
         </main>
       </div>

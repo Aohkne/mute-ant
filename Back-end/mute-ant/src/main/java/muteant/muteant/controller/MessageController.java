@@ -4,6 +4,7 @@ import muteant.muteant.model.dto.request.MessageRequest;
 import muteant.muteant.model.dto.request.QueryWrapper;
 import muteant.muteant.model.dto.response.MessageResponse;
 import muteant.muteant.model.dto.response.ResponseObject;
+import muteant.muteant.model.entity.ConversationsEntity;
 import muteant.muteant.service.MessageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -93,4 +94,17 @@ public class MessageController {
                 .message("Delete message success")
                 .build());
     }
+
+    @Operation(summary = "Get messages by conversation ID", security = {@SecurityRequirement(name = "accessCookie")})
+    @GetMapping("/conversation/{conversationId}")
+    public ResponseEntity<ResponseObject<List<MessageResponse>>> getMessagesByConversationId(@PathVariable Long conversationId) {
+        var messages = messageService.getMessagesByConversationId(conversationId);
+        return ResponseEntity.ok(new ResponseObject.Builder<List<MessageResponse>>()
+                .success(true)
+                .code("SUCCESS")
+                .content(messages)
+                .message("Get messages by conversation ID success")
+                .build());
+    }
+
 }

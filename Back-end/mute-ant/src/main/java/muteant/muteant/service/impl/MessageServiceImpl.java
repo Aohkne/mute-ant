@@ -90,6 +90,19 @@ public class MessageServiceImpl implements MessageService {
         messageRepository.delete(message);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<MessageResponse> getMessagesByConversationId(Long conversationId) {
+        ConversationsEntity conversation = conversationRepository.findById(conversationId)
+                .orElseThrow(() -> new ValidationException("Conversation not found"));
+
+        List<MessagesEntity> messages = messageRepository.findByConversationsId(conversation);
+
+        return messages.stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
     private MessageResponse mapToResponse(MessagesEntity message) {
         return MessageResponse.builder()
                 .id(message.getId())
