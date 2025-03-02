@@ -17,4 +17,5 @@ public interface MessageService {
     MessageResponse getMessageById(Long id);
     void deleteMessage(Long id);
     List<MessageResponse> getMessagesByConversationId(Long conversationId);
+    Long getTotalMessageBySender(String sender);
 }

@@ -15,7 +15,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -106,5 +108,19 @@ public class MessageController {
                 .message("Get messages by conversation ID success")
                 .build());
     }
+    @Operation(summary = "Get total messages by sender", security = {@SecurityRequirement(name = "accessCookie")})
+    @GetMapping("/count/sender/{sender}")
+    public ResponseEntity<ResponseObject<Map<String, Long>>> getTotalMessageBySender(@PathVariable String sender) {
+        Long totalMessages = messageService.getTotalMessageBySender(sender);
 
+        Map<String, Long> result = new HashMap<>();
+        result.put("totalMessages", totalMessages);
+
+        return ResponseEntity.ok(new ResponseObject.Builder<Map<String, Long>>()
+                .success(true)
+                .code("SUCCESS")
+                .content(result)
+                .message("Get total messages by sender success")
+                .build());
+    }
 }

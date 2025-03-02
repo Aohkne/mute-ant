@@ -103,6 +103,19 @@ public class MessageServiceImpl implements MessageService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Long getTotalMessageBySender(String sender) {
+        if (sender == null || sender.isEmpty()) {
+            throw new ValidationException("Sender cannot be empty");
+        }
+        Long totalMessages = messageRepository.countBySender(sender);
+        if (totalMessages == null) {
+            throw new ActionFailedException("Failed to get total messages for sender: " + sender);
+        }
+         return totalMessages;
+    }
+
     private MessageResponse mapToResponse(MessagesEntity message) {
         return MessageResponse.builder()
                 .id(message.getId())
