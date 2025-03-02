@@ -1,34 +1,46 @@
-// src/components/NavBar/NavBar.tsx
-import React, { useState } from "react";
-import classNames from "classnames/bind";
-import styles from "./NavChat.module.scss";
+import React, { useEffect, useState } from "react";
 import { Menu } from "lucide-react";
 
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "@/redux/store";
+import {
+  fetchConversations,
+  fetchMessages,
+} from "@/redux/features/conversation/conversationSlice";
+
+import classNames from "classnames/bind";
+import styles from "./NavChat.module.scss";
 const cx = classNames.bind(styles);
 
-const historyData = [
-  { role: "user", parts: "Xin chào, đây là lịch sử chat 1!" },
-  { role: "model", parts: "Chào bạn! Mình là chatbot đây." },
-  { role: "user", parts: "Lịch sử chat 2 có nội dung dài hơn một chút." },
-  { role: "model", parts: "Mình hiểu rồi. Bạn cần giúp gì không?" },
-  {
-    role: "user",
-    parts: "Lịch sử chat 3 với đoạn hội thoại dài hơn nữa để test giao diện.",
-  },
-];
-
 interface NavBarProps {
-  onSelectHistory: (index: number) => void;
+  onSelectHistory: (id: number) => void;
 }
 
 const NavBar: React.FC<NavBarProps> = ({ onSelectHistory }) => {
   const [isOpen, setIsOpen] = useState(true);
 
+  const dispatch = useDispatch<AppDispatch>();
+  const { conversations, messages, loading } = useSelector(
+    (state: RootState) => state.conversations
+  );
+
+  useEffect(() => {
+    dispatch(fetchConversations());
+  }, [dispatch]);
+
+  useEffect(() => {
+    conversations.forEach((conversation: any) => {
+      if (!messages[conversation.id]) {
+        dispatch(fetchMessages(conversation.id));
+      }
+    });
+  }, [dispatch, conversations.length, messages]);
+
   const toggleNav = () => setIsOpen(!isOpen);
 
   return (
     <>
-      {!isOpen && (
+      {!loading && !isOpen && (
         <div className={cx("toggle")} onClick={toggleNav}>
           <Menu size={24} />
         </div>
@@ -43,15 +55,23 @@ const NavBar: React.FC<NavBarProps> = ({ onSelectHistory }) => {
         </div>
 
         <ul className={cx("history-list")}>
-          {historyData.map((item, index) => (
-            <li
-              key={index}
-              className={cx("history-item")}
-              onClick={() => onSelectHistory(index)}
-            >
-              {item.parts.slice(0, 30)}...
-            </li>
-          ))}
+          {conversations.map((conversation: any, index: number) => {
+            const messageList = messages[conversation.id] || [];
+            const firstMessage =
+              messageList.length > 0 ? messageList[0].messageText : null;
+
+            return firstMessage ? (
+              <li
+                key={index}
+                className={cx("history-item")}
+                onClick={() => onSelectHistory(conversation.id)}
+              >
+                {firstMessage.length > 20
+                  ? `${firstMessage.slice(0, 20)}...`
+                  : firstMessage}
+              </li>
+            ) : null;
+          })}
         </ul>
       </nav>
     </>

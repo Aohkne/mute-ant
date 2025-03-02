@@ -12,7 +12,10 @@ import editBlogReducer from "./features/blogs/editSlice";
 import blogDetailReducer from "./features/blogs/blogDetailSlice";
 import deleteBlogReducer from "./features/blogs/deleteSlice";
 
+import conversationReducer from "./features/conversation/conversationSlice";
 import postConversationReducer from "./features/conversation/postSlice";
+
+import postMessageReducer from "./features/messages/postSlice";
 
 export const store = configureStore({
   reducer: {
@@ -26,7 +29,10 @@ export const store = configureStore({
     blogDetail: blogDetailReducer,
     deleteBlog: deleteBlogReducer,
 
+    conversations: conversationReducer,
     postConversation: postConversationReducer,
+
+    postMessage: postMessageReducer,
   },
 });
 

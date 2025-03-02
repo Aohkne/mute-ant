@@ -42,6 +42,7 @@ export const createConversation = createAsyncThunk(
 
   async (_, { rejectWithValue }) => {
     const userId = getUserIdFromSession();
+
     if (!userId) return rejectWithValue("User ID không hợp lệ!");
 
     try {

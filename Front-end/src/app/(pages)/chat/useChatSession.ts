@@ -30,7 +30,7 @@ export function useChatSession() {
 
   const template =
     process.env.NEXT_PUBLIC_TEMPLATE ||
-    "You are Mute-ant, an assistant specifically designed for the deaf and mute...";
+    "Nice to meet you. I'm mute-ant, your chatbot. Do you have any questions about deafness, sign language?";
 
   useEffect(() => {
     if (!sessionId) {
@@ -50,7 +50,6 @@ export function useChatSession() {
           generationConfig: {
             maxOutputTokens: 4000,
           },
-          // Apply template only once during initialization
           history: [
             {
               role: "user",
@@ -116,7 +115,6 @@ export function useChatSession() {
       { url: "/doc/definition.txt", type: "txt" },
     ];
 
-    // Use decodeURIComponent to ensure proper UTF-8 handling in the query
     const decodedQuery = decodeURIComponent(query);
 
     const docsContent: string[] = await Promise.all(
@@ -132,7 +130,6 @@ export function useChatSession() {
       (content) => content.length > 0
     );
 
-    // Use normalized strings for comparison to handle UTF-8 properly
     const normalizedQuery = decodedQuery.toLowerCase().normalize("NFC");
 
     const relevantDocs = validDocsContent.filter((content) => {
@@ -143,7 +140,6 @@ export function useChatSession() {
     return relevantDocs;
   };
 
-  // Thêm hàm mới để log phản hồi vào Google Sheets
   const logResponseToSheets = async (
     userMessage: string,
     aiResponse: string
@@ -170,7 +166,6 @@ export function useChatSession() {
     }
   };
 
-  // Sửa đổi hàm sendMessageWithRAG để bao gồm logging
   const sendMessageWithRAG = async (message: string): Promise<ChatResponse> => {
     if (!chat) {
       throw new Error("Chat session not initialized.");
@@ -190,10 +185,8 @@ export function useChatSession() {
 
       const chatResponse = await chat.sendMessage(augmentedMessage);
 
-      // Trích xuất text phản hồi của AI
       const aiResponseText = chatResponse.response.text();
 
-      // Log phản hồi vào Google Sheets
       await logResponseToSheets(message, aiResponseText);
 
       return chatResponse;
