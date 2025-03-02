@@ -9,13 +9,17 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import muteant.muteant.service.ConversationService;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,13 +30,8 @@ public class ConversationsController {
     @Operation(summary = "Get all conversations", security = {@SecurityRequirement(name = "accessCookie")})
     @GetMapping
     public ResponseEntity<ResponseObject<List<ConversationResponse>>> getAllConversations(
-            @RequestParam(required = false) String query,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id,asc") String sort) {
-
-        var pageable = PageRequest.of(page, size, Sort.by(Sort.Order.by(sort.split(",")[0]).with(Sort.Direction.fromString(sort.split(",")[1]))));
-
+            @RequestParam(name = "q", required = false) String query,
+            @PageableDefault(page = 0, size = 10) Pageable pageable) {
         var paginationResult = conversationService.getAllConversations(QueryWrapper.builder()
                 .search(query)
                 .wrapSort(pageable)
@@ -128,6 +127,27 @@ public class ConversationsController {
                 .success(true)
                 .code("SUCCESS")
                 .message("Delete Success")
+                .build());
+    }
+
+    @Operation(summary = "Get total conversation count for a specific month", security = {@SecurityRequirement(name = "accessCookie")})
+    @GetMapping("/stats/monthly-total/{year}/{month}")
+    public ResponseEntity<ResponseObject<Map<String, Object>>> getMonthlyConversationTotal(
+            @PathVariable int year,
+            @PathVariable int month) {
+        Long monthlyTotal = conversationService.getMonthlyConversationCount(year, month);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("year", year);
+        response.put("month", month);
+        response.put("monthlyTotal", monthlyTotal);
+        response.put("dailyBreakdown", conversationService.getConversationCountByDayForMonth(year, month));
+
+        return ResponseEntity.ok(new ResponseObject.Builder<Map<String, Object>>()
+                .success(true)
+                .code("SUCCESS")
+                .content(response)
+                .message("Get monthly conversation statistics success")
                 .build());
     }
 
