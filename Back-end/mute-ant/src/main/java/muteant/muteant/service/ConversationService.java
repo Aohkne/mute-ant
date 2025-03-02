@@ -6,6 +6,8 @@ import muteant.muteant.model.dto.response.ConversationResponse;
 import muteant.muteant.model.dto.response.PaginationWrapper;
 
 import java.util.List;
+import java.util.Map;
+
 public interface ConversationService {
     PaginationWrapper<List<ConversationResponse>> getAllConversations(QueryWrapper queryWrapper);
 
@@ -23,5 +25,7 @@ public interface ConversationService {
 
     List<ConversationResponse> getConversationsByAuthorId(Long authorId);
 
+    Map<String, Long> getConversationCountByDayForMonth(int year, int month);
 
+    Long getMonthlyConversationCount(int year, int month);
 }

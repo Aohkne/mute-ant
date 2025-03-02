@@ -16,8 +16,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -129,6 +134,52 @@ public class ConversationServiceImpl implements ConversationService {
         return conversations.stream()
                 .map(this::wrapConversationResponse)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Map<String, Long> getConversationCountByDayForMonth(int year, int month) {
+        if (month < 1 || month > 12) {
+            throw new ValidationException("Month must be between 1 and 12");
+        }
+
+        LocalDate firstDay = LocalDate.of(year, month, 1);
+        LocalDate lastDay = YearMonth.of(year, month).atEndOfMonth();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        LocalDateTime startDateTime = firstDay.atStartOfDay();
+        LocalDateTime endDateTime = lastDay.plusDays(1).atStartOfDay();
+
+        List<ConversationsEntity> conversations = conversationRepository.findByCreatedDateBetween(startDateTime, endDateTime);
+
+        Map<String, Long> dailyCounts = new HashMap<>();
+
+        for (int day = 1; day <= lastDay.getDayOfMonth(); day++) {
+            LocalDate date = LocalDate.of(year, month, day);
+            dailyCounts.put(date.format(formatter), 0L);
+        }
+
+        for (ConversationsEntity conversation : conversations) {
+            LocalDate conversationDate = conversation.getCreatedDate().toLocalDate();
+            String dateKey = conversationDate.format(formatter);
+            dailyCounts.put(dateKey, dailyCounts.getOrDefault(dateKey, 0L) + 1);
+        }
+
+        return dailyCounts;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Long getMonthlyConversationCount(int year, int month) {
+        if (month < 1 || month > 12) {
+            throw new ValidationException("Month must be between 1 and 12");
+        }
+        LocalDate firstDay = LocalDate.of(year, month, 1);
+        LocalDate lastDay = YearMonth.of(year, month).atEndOfMonth();
+        LocalDateTime startDateTime = firstDay.atStartOfDay();
+        LocalDateTime endDateTime = lastDay.plusDays(1).atStartOfDay();
+        return conversationRepository.countByCreatedDateBetween(startDateTime, endDateTime);
     }
 
 
