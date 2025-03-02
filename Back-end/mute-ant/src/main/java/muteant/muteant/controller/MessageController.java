@@ -10,12 +10,16 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,12 +31,8 @@ public class MessageController {
     @Operation(summary = "Get all messages", security = {@SecurityRequirement(name = "accessCookie")})
     @GetMapping
     public ResponseEntity<ResponseObject<List<MessageResponse>>> getAllMessages(
-            @RequestParam(required = false) String query,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id,asc") String sort) {
-
-        var pageable = PageRequest.of(page, size, Sort.by(Sort.Order.by(sort.split(",")[0]).with(Sort.Direction.fromString(sort.split(",")[1]))));
+            @RequestParam(name = "q", required = false) String query,
+            @PageableDefault(page = 0, size = 10) Pageable pageable) {
 
         var paginationResult = messageService.getAllMessagePagination(QueryWrapper.builder()
                 .search(query)
@@ -106,5 +106,19 @@ public class MessageController {
                 .message("Get messages by conversation ID success")
                 .build());
     }
+    @Operation(summary = "Get total messages by sender", security = {@SecurityRequirement(name = "accessCookie")})
+    @GetMapping("/count/sender/{sender}")
+    public ResponseEntity<ResponseObject<Map<String, Long>>> getTotalMessageBySender(@PathVariable String sender) {
+        Long totalMessages = messageService.getTotalMessageBySender(sender);
 
+        Map<String, Long> result = new HashMap<>();
+        result.put("totalMessages", totalMessages);
+
+        return ResponseEntity.ok(new ResponseObject.Builder<Map<String, Long>>()
+                .success(true)
+                .code("SUCCESS")
+                .content(result)
+                .message("Get total messages by sender success")
+                .build());
+    }
 }

@@ -11,4 +11,5 @@ import java.util.Optional;
 @Repository
 public interface MessageRepository extends BaseRepository<MessagesEntity, Long> {
     List<MessagesEntity> findByConversationsId(ConversationsEntity  conversationId);
+    Long countBySender(String sender);
 }
