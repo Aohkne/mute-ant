@@ -1,34 +1,36 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
-import { Send, SquarePlus } from "lucide-react";
+import { Send, Trash } from "lucide-react";
 import Markdown from "react-markdown";
 import classNames from "classnames/bind";
 import styles from "./Chat.module.scss";
-import Image from "next/image";
-import { useChatSession } from "./useChatSession";
-
 import Header from "@/components/Header/Header";
-import NavChat from "@/components/NavChat/NavChat";
+import Image from "next/image";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const cx = classNames.bind(styles);
 
-interface MessageItem {
-  role: string;
-  parts: string;
+interface ChatSession {
+  sendMessage: (
+    message: string
+  ) => Promise<{ response: { text: () => string } }>;
 }
 
 const Chatbot: React.FC = () => {
-  const [input, setInput] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
-  const [history, setHistory] = useState<MessageItem[]>([
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [history, setHistory] = useState([
     {
       role: "model",
-      parts:
-        "Rất hân hạnh được gặp bạn. Mình là mute-ant, chatbot của bạn. Bạn có muốn hỏi gì về khiếm thính, ngôn ngữ kí hiệu không?",
+      parts: "Great to meet you. I'm Gemini, your chatbot.",
     },
   ]);
-  const messageContainerRef = useRef<HTMLDivElement | null>(null);
-  const { chat, resetChat, sendMessageWithRAG } = useChatSession();
+  const template = process.env.NEXT_PUBLIC_TEMPLATE || "gemini";
+  console.log("Template: ", template);
+  const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_APIKEY || "");
+  const [chat, setChat] = useState<ChatSession | null>(null);
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+  const messageContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (messageContainerRef.current) {
@@ -37,9 +39,19 @@ const Chatbot: React.FC = () => {
     }
   }, [history]);
 
-  async function chatting(): Promise<void> {
-    if (!input.trim()) return;
+  useEffect(() => {
+    if (!chat) {
+      setChat(
+        model.startChat({
+          generationConfig: {
+            maxOutputTokens: 4000,
+          },
+        })
+      );
+    }
+  }, [chat, model]);
 
+  async function chatting() {
     setLoading(true);
     setHistory((oldHistory) => [
       ...oldHistory,
@@ -52,9 +64,7 @@ const Chatbot: React.FC = () => {
         parts: "Thinking...",
       },
     ]);
-    const userInput = input;
     setInput("");
-
     try {
       if (!chat) {
         setLoading(false);
@@ -68,140 +78,144 @@ const Chatbot: React.FC = () => {
         });
         return;
       }
-
-      // Use sendMessageWithRAG instead of sendMessage directly
-      const result = await sendMessageWithRAG(userInput);
+      const result = await chat.sendMessage(input + template);
       const response = await result.response;
       const text = response.text();
-
       setLoading(false);
       setHistory((oldHistory) => {
         const newHistory = oldHistory.slice(0, oldHistory.length - 1);
-        return [...newHistory, { role: "model", parts: text }];
+        const updatedHistory = [...newHistory, { role: "model", parts: text }];
+
+        // Save chat history to MongoDB
+        fetch("http://127.0.0.1:5000/api/saveChat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: "exampleUserId123", // Replace with actual user ID
+            messages: updatedHistory.map((item) => ({
+              role: item.role,
+              content: item.parts,
+              timestamp: new Date(),
+            })),
+          }),
+        }).catch((error) =>
+          console.error("Failed to save chat history:", error)
+        );
+
+        return updatedHistory;
       });
     } catch (error) {
       setHistory((oldHistory) => {
         const newHistory = oldHistory.slice(0, oldHistory.length - 1);
         newHistory.push({
           role: "model",
-          parts: "Oops! Đã xảy ra lỗi. Vui lòng thử lại.",
+          parts: "Oops! Something went wrong.",
         });
         return newHistory;
       });
       setLoading(false);
-      console.error("Chat error:", error);
+      console.error(error);
     }
   }
 
-  function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>): void {
-    if (e.key === "Enter" && !e.shiftKey) {
+  function handleKeyDown(e: React.KeyboardEvent) {
+    if (e.key === "Enter") {
       e.preventDefault();
       chatting();
     }
   }
 
-  function reset(): void {
+  function reset() {
     setHistory([
       {
         role: "model",
-        parts:
-          "Rất hân hạnh được gặp bạn. Mình là mute-ant, chatbot của bạn. Bạn có muốn hỏi gì về khiếm thính, ngôn ngữ kí hiệu không?",
+        parts: "Great to meet you. I'm Gemini, your chatbot.",
       },
     ]);
     setInput("");
-    resetChat();
-  }
-
-  function handleSelectHistory(index: number): void {
-    alert(`Bạn đã chọn lịch sử chat ${index + 1}`);
+    setChat(null);
   }
 
   return (
     <div className={cx("wrapper")}>
-      <NavChat onSelectHistory={handleSelectHistory} />
+      <div className={cx("px-10")}>
+        <Header />
+      </div>
 
-      <div className={cx("chat")}>
-        <div className={cx("px-10")}>
-          <Header />
-        </div>
-
-        <main className={cx("content")}>
-          <div className={cx("chat-container")}>
-            <div className={cx("message-container")} ref={messageContainerRef}>
-              {history.map((item, index) => (
-                <div
-                  key={index}
-                  className={cx(
-                    "chat-message",
-                    {
-                      "message-start": item.role === "model",
-                      "message-end": item.role !== "model",
-                    },
-                    {
-                      user: item.role !== "model",
-                    }
-                  )}
-                >
-                  <div className={cx("avatar-container")}>
-                    <div
-                      className={cx("avatar-wrapper", {
-                        user: item.role !== "model",
-                      })}
-                    >
-                      <Image
-                        alt={item.role === "model" ? "Gemini" : "User"}
-                        src={
-                          item.role === "model"
-                            ? "/images/ant.png"
-                            : "/images/author/LHK.png"
-                        }
-                        width={50}
-                        height={50}
-                        className={cx("avatar-image")}
-                      />
-                    </div>
-                  </div>
-
+      <main className={cx("content", "py-10")}>
+        <div className={cx("chat-container")}>
+          <div className={cx("message-container")}>
+            {history.map((item, index) => (
+              <div
+                key={index}
+                className={cx(
+                  "chat-message",
+                  {
+                    "message-start": item.role === "model",
+                    "message-end": item.role !== "model",
+                  },
+                  {
+                    user: item.role !== "model",
+                  }
+                )}
+              >
+                <div className={cx("avatar-container")}>
                   <div
-                    className={cx("message-bubble", {
+                    className={cx("avatar-wrapper", {
                       user: item.role !== "model",
                     })}
                   >
-                    <div
-                      className={cx(
-                        item.role !== "model"
-                          ? "chat-text-user"
-                          : "chat-text-bot"
-                      )}
-                    >
-                      <Markdown>{item.parts}</Markdown>
-                    </div>
+                    <Image
+                      alt={item.role === "model" ? "Gemini" : "User"}
+                      src={
+                        item.role === "model"
+                          ? "/images/ant.png"
+                          : "/images/author/LHK.png"
+                      }
+                      width={50}
+                      height={50}
+                      className={cx("avatar-image")}
+                    />
                   </div>
                 </div>
-              ))}
-            </div>
+
+                <div
+                  className={cx("message-bubble", {
+                    user: item.role !== "model",
+                  })}
+                >
+                  <div
+                    className={cx(
+                      item.role !== "model" ? "chat-text-user" : "chat-text-bot"
+                    )}
+                  >
+                    <Markdown>{item.parts}</Markdown>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
 
           <div className={cx("input-container")}>
             <button className={cx("reset-button")} onClick={reset}>
-              <SquarePlus className={cx("icon-small")} />
+              <Trash className={cx("icon-small")} />
             </button>
             <textarea
               value={input}
-              spellCheck={false}
               rows={1}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Bắt đầu trò chuyện..."
+              placeholder="Start Chatting..."
               className={cx("chat-input", "text-title")}
-              lang="vi"
             />
             <button
               className={cx("send-button", {
                 loading: loading,
               })}
               onClick={chatting}
-              disabled={loading || !input.trim()}
+              disabled={loading}
             >
               {loading ? (
                 <span className={cx("spinner")} />
@@ -210,8 +224,8 @@ const Chatbot: React.FC = () => {
               )}
             </button>
           </div>
-        </main>
-      </div>
+        </div>
+      </main>
     </div>
   );
 };

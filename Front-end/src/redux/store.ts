@@ -12,16 +12,21 @@ import editBlogReducer from "./features/blogs/editSlice";
 import blogDetailReducer from "./features/blogs/blogDetailSlice";
 import deleteBlogReducer from "./features/blogs/deleteSlice";
 
+import postConversationReducer from "./features/conversation/postSlice";
+
 export const store = configureStore({
   reducer: {
     counter: counterReducer,
     auth: authReducer,
     accounts: accountsReducer,
+
     blogs: blogsReducer,
     postBlogs: postBlogsReducer,
     editBlog: editBlogReducer,
     blogDetail: blogDetailReducer,
     deleteBlog: deleteBlogReducer,
+
+    postConversation: postConversationReducer,
   },
 });
 
