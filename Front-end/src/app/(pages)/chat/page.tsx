@@ -110,7 +110,7 @@ const Chatbot: React.FC = () => {
   }
 
   function handleSelectHistory(index: number): void {
-    alert(`Bạn đã chọn lịch sử chat ${index + 1}`);
+    alert(`You choose the chat history ${index + 1}`);
   }
 
   return (
@@ -146,7 +146,7 @@ const Chatbot: React.FC = () => {
                       })}
                     >
                       <Image
-                        alt={item.role === "model" ? "Gemini" : "User"}
+                        alt={item.role === "model" ? "Mute-ant" : "User"}
                         src={
                           item.role === "model"
                             ? "/images/ant.png"
