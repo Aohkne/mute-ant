@@ -10,7 +10,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,12 +31,8 @@ public class MessageController {
     @Operation(summary = "Get all messages", security = {@SecurityRequirement(name = "accessCookie")})
     @GetMapping
     public ResponseEntity<ResponseObject<List<MessageResponse>>> getAllMessages(
-            @RequestParam(required = false) String query,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id,asc") String sort) {
-
-        var pageable = PageRequest.of(page, size, Sort.by(Sort.Order.by(sort.split(",")[0]).with(Sort.Direction.fromString(sort.split(",")[1]))));
+            @RequestParam(name = "q", required = false) String query,
+            @PageableDefault(page = 0, size = 10) Pageable pageable) {
 
         var paginationResult = messageService.getAllMessagePagination(QueryWrapper.builder()
                 .search(query)
