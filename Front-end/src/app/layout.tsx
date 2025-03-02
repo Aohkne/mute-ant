@@ -4,10 +4,14 @@
 import { Providers } from "../redux/provider";
 import { Poppins } from "next/font/google";
 import "../styles/globals.scss";
+
 import { ThemeProvider } from "@/components/theme-provider";
+import AuthGuard from "@/app/(auth)/AuthGuard";
+
+import { useEffect, useState } from "react";
+
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useEffect, useState } from "react";
 
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -38,30 +42,32 @@ export default function RootLayout({
       </head>
       <body className={`${poppins.variable} antialiased`}>
         <Providers>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            {children}
-            <ToastContainer
-              position="top-right"
-              autoClose={3000}
-              hideProgressBar={false}
-              newestOnTop={false}
-              closeOnClick
-              rtl={false}
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
-              theme={theme}
-              style={{
-                fontSize: "2rem",
-                fontWeight: "500",
-              }}
-            />
-          </ThemeProvider>
+          <AuthGuard>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              {children}
+              <ToastContainer
+                position="top-right"
+                autoClose={3000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme={theme}
+                style={{
+                  fontSize: "2rem",
+                  fontWeight: "500",
+                }}
+              />
+            </ThemeProvider>
+          </AuthGuard>
         </Providers>
       </body>
     </html>

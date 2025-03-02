@@ -47,7 +47,7 @@
       display: flex;
       padding: 1.5rem 1rem;
 
-      & + .user {
+      &.user {
         flex-direction: row-reverse;
       }
     }

@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import _ from "lodash";
 
 const getAuthorIdFromSession = () => {
   const sessionData = sessionStorage.getItem("user");
@@ -8,16 +7,15 @@ const getAuthorIdFromSession = () => {
     const parsedSession = JSON.parse(sessionData);
     return parsedSession?.value?.userId || null;
   }
-
   return null;
 };
 
+// Fetch danh sách hội thoại
 export const fetchConversations = createAsyncThunk(
   "conversations/fetchConversations",
   async (_, { rejectWithValue }) => {
     try {
       const authorId = getAuthorIdFromSession();
-
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_API_URL}/conversations/author/${authorId}`
       );
@@ -28,6 +26,7 @@ export const fetchConversations = createAsyncThunk(
   }
 );
 
+// Fetch tin nhắn theo conversationId
 export const fetchMessages = createAsyncThunk(
   "conversations/fetchMessages",
   async (conversationId: number, { rejectWithValue }) => {
@@ -35,7 +34,8 @@ export const fetchMessages = createAsyncThunk(
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_API_URL}/messages/conversation/${conversationId}`
       );
-      // Lọc tin nhắn có sender khác "model"
+
+      // Lọc tin nhắn hợp lệ (không phải bot, không rỗng)
       const filteredMessages = response.data.content.filter(
         (msg: any) => msg.sender !== "model" && msg.messageText !== ""
       );
@@ -46,11 +46,36 @@ export const fetchMessages = createAsyncThunk(
   }
 );
 
+// Gửi tin nhắn mới
+export const sendMessage = createAsyncThunk(
+  "conversations/sendMessage",
+  async (
+    {
+      conversationId,
+      messageText,
+    }: { conversationId: number; messageText: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/messages`,
+        {
+          conversationId,
+          messageText,
+        }
+      );
+      return { conversationId, message: response.data };
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
 const conversationSlice = createSlice({
   name: "conversations",
   initialState: {
     conversations: [],
-    messages: {},
+    messages: {} as Record<number, { messageText: string }[]>,
     loading: false,
     error: null,
   },
@@ -63,17 +88,7 @@ const conversationSlice = createSlice({
       })
       .addCase(fetchConversations.fulfilled, (state, action) => {
         state.loading = false;
-
-        // Sắp xếp lại dữ liệu
-        const newConversations = action.payload.sort(
-          (a: any, b: any) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        );
-
-        // Nếu dữ liệu KHÁC thì mới cập nhật (tránh bị Redux bỏ qua do reference cũ)
-        if (!_.isEqual(state.conversations, newConversations)) {
-          state.conversations = newConversations;
-        }
+        state.conversations = action.payload;
       })
       .addCase(fetchConversations.rejected, (state, action) => {
         state.loading = false;
@@ -90,6 +105,13 @@ const conversationSlice = createSlice({
       .addCase(fetchMessages.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as any;
+      })
+      .addCase(sendMessage.fulfilled, (state, action) => {
+        const { conversationId, message } = action.payload;
+        if (!state.messages[conversationId]) {
+          state.messages[conversationId] = [];
+        }
+        state.messages[conversationId].push(message);
       });
   },
 });

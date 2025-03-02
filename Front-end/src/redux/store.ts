@@ -16,6 +16,8 @@ import conversationReducer from "./features/conversation/conversationSlice";
 import postConversationReducer from "./features/conversation/postSlice";
 
 import postMessageReducer from "./features/messages/postSlice";
+import chatHistoryReducer from "./features/messages/historySlice";
+import dtoReducer from "./features/messages/dtoSlice";
 
 export const store = configureStore({
   reducer: {
@@ -33,6 +35,8 @@ export const store = configureStore({
     postConversation: postConversationReducer,
 
     postMessage: postMessageReducer,
+    chatHistory: chatHistoryReducer,
+    dtoMessage: dtoReducer,
   },
 });
 

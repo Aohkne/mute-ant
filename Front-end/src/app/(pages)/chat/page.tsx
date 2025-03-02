@@ -11,11 +11,15 @@ import NavChat from "@/components/NavChat/NavChat";
 import { AppDispatch, RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 
-import { createConversation } from "@/redux/features/conversation";
+import {
+  createConversation,
+  fetchConversations,
+} from "@/redux/features/conversation";
+
+import { fetchChatHistory, postMessage } from "@/redux/features/messages";
 
 import classNames from "classnames/bind";
 import styles from "./Chat.module.scss";
-import { postMessage } from "@/redux/features/messages";
 const cx = classNames.bind(styles);
 
 interface MessageItem {
@@ -26,6 +30,7 @@ interface MessageItem {
 const Chatbot: React.FC = () => {
   const [input, setInput] = useState<string>("");
   const [conversationId, setConversationId] = useState<number | null>(null);
+
   const [loading, setLoading] = useState<boolean>(false);
   const [history, setHistory] = useState<MessageItem[]>([
     {
@@ -58,6 +63,7 @@ const Chatbot: React.FC = () => {
 
         if (postConversation) {
           setConversationId(response.content.id);
+          dispatch(fetchConversations());
         }
       } catch (error) {
         console.error("Error creating conversation:", error);
@@ -67,7 +73,7 @@ const Chatbot: React.FC = () => {
     if (!conversationId) {
       createNewConversation();
     }
-  }, [dispatch]);
+  }, [dispatch, conversationId, postConversation]);
 
   async function chatting(): Promise<void> {
     if (!input.trim() || !conversationId) return;
@@ -172,6 +178,8 @@ const Chatbot: React.FC = () => {
           "New conversation created after reset:",
           response.content.id
         );
+        // Phương án cuối cùng:)))
+        window.location.reload();
       } catch (error) {
         console.error("Error creating new conversation:", error);
       }
@@ -180,9 +188,12 @@ const Chatbot: React.FC = () => {
     createNewConversation();
   }
 
-  function handleSelectHistory(index: number): void {
-    alert(`Bạn đã chọn lịch sử chat ${index + 1}`);
+  // GET History chat
+  function handleSelectHistory(id: number): void {
+    dispatch(fetchChatHistory(id));
   }
+
+  const { messages } = useSelector((state: RootState) => state.chatHistory);
 
   return (
     <div className={cx("wrapper")}>
@@ -196,6 +207,59 @@ const Chatbot: React.FC = () => {
         <main className={cx("content")}>
           <div className={cx("chat-container")}>
             <div className={cx("message-container")} ref={messageContainerRef}>
+              {messages.length > 0 &&
+                messages.map((item, index) => (
+                  <div
+                    key={index}
+                    className={cx(
+                      "chat-message",
+                      {
+                        "message-start": item.sender === "model",
+                        "message-end": item.sender !== "model",
+                      },
+                      {
+                        user: item.sender !== "model",
+                      }
+                    )}
+                  >
+                    <div className={cx("avatar-container")}>
+                      <div
+                        className={cx("avatar-wrapper", {
+                          user: item.sender !== "model",
+                        })}
+                      >
+                        <Image
+                          alt={item.sender === "model" ? "Gemini" : "User"}
+                          src={
+                            item.sender === "model"
+                              ? "/images/ant.png"
+                              : "/images/author/LHK.png"
+                          }
+                          width={50}
+                          height={50}
+                          className={cx("avatar-image")}
+                        />
+                      </div>
+                    </div>
+
+                    <div
+                      className={cx("message-bubble", {
+                        user: item.sender !== "model",
+                      })}
+                    >
+                      <div
+                        className={cx(
+                          item.sender !== "model"
+                            ? "chat-text-user"
+                            : "chat-text-bot"
+                        )}
+                      >
+                        <Markdown>{item.messageText}</Markdown>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+
               {history.map((item, index) => (
                 <div
                   key={index}
