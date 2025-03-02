@@ -5,7 +5,7 @@ import classNames from "classnames/bind";
 import styles from "./Login.module.scss";
 import Image from "next/image";
 import { Eye, EyeClosed, LockKeyhole, UserRound } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useAppDispatch } from "../../../hooks";
 import { useRouter } from "next/navigation";
@@ -19,43 +19,13 @@ type User = {
   role: string;
 };
 
-type StorageItem<T> = {
-  value: T;
-  expiry: number;
-};
-
 const EXPIRE_TIME = 30 * 24 * 60 * 60 * 1000;
 
-// Sử dụng sessionStorage thay vì localStorage
-const setWithExpiry = <T,>(key: string, value: T, ttl: number) => {
-  const now = new Date();
-  const item: StorageItem<T> = {
-    value: value,
-    expiry: now.getTime() + ttl,
-  };
-  sessionStorage.setItem(key, JSON.stringify(item));
-};
-
-const getWithRedirect = <T,>(key: string, router: any): User | null => {
-  const itemStr = sessionStorage.getItem(key);
-  if (!itemStr) return null;
-
-  const item: StorageItem<T> = JSON.parse(itemStr);
-  const now = new Date();
-
-  if (now.getTime() > item.expiry) {
-    sessionStorage.removeItem(key);
-    return null;
-  }
-
-  const user = item.value as User;
-  if (user.role === "ROLE_ADMIN") {
-    router.replace("/dashboard");
-  } else {
-    router.replace("/");
-  }
-
-  return user;
+const saveUserSession = (user: User) => {
+  sessionStorage.setItem(
+    "user",
+    JSON.stringify({ value: user, expiry: Date.now() + EXPIRE_TIME })
+  );
 };
 
 export default function Login() {
@@ -66,28 +36,20 @@ export default function Login() {
   const dispatch = useAppDispatch();
   const router = useRouter();
 
-  useEffect(() => {
-    getWithRedirect<User>("user", router);
-  }, [router]);
-
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (username === "admin" && password === "muteantpassword") {
-      setWithExpiry<User>(
-        "user",
-        { username, role: "ROLE_ADMIN" },
-        EXPIRE_TIME
-      );
+      saveUserSession({ username, role: "ROLE_ADMIN" });
       toast.success("Welcome, Admin!");
-      router.replace("/dashboard");
+      router.replace("/");
       return;
     }
 
     try {
       const result = await dispatch(loginAction({ username, password }));
       if (result.payload) {
-        setWithExpiry<User>("user", result.payload, EXPIRE_TIME);
+        saveUserSession(result.payload);
         toast.success("Login successfully!");
         router.replace("/");
       } else {

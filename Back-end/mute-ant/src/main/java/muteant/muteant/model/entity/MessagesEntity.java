@@ -18,7 +18,7 @@ public class MessagesEntity extends BaseEntity {
 
     @Column(name = "sender", nullable = false)
     private String sender;
-
+    
     @Column(name = "message_text", nullable = false, columnDefinition = "TEXT")
     private String message_text;
 

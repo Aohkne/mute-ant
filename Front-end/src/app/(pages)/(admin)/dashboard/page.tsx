@@ -18,26 +18,30 @@ import { ChartArea } from "@/components/Chart/ChartArea";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/redux/store";
+
 import { fetchUsers } from "@/redux/features/accounts";
+
 import { fetchBlogs } from "@/redux/features/blogs";
+
+import { fetchTotalMessages } from "@/redux/features/messages";
 
 //Chart
 const chartConfig = {
-  request: { label: "Requests", color: "hsl(var(--chart-1))" },
-  response: { label: "Responses", color: "hsl(var(--chart-2))" },
+  conversation: { label: "Conversation", color: "hsl(var(--chart-1))" },
+  // response: { label: "Responses", color: "hsl(var(--chart-2))" },
 };
 
 const chartData = [
-  { date: "2024-11-01", request: 180, response: 140 },
-  { date: "2024-12-01", request: 220, response: 160 },
-  { date: "2025-01-01", request: 190, response: 180 },
-  { date: "2025-01-15", request: 250, response: 200 },
-  { date: "2025-02-01", request: 230, response: 190 },
-  { date: "2025-02-10", request: 270, response: 210 },
-  { date: "2025-02-20", request: 250, response: 180 },
-  { date: "2025-02-25", request: 350, response: 180 },
-  { date: "2025-02-25", request: 30, response: 180 },
-  { date: "2025-02-23", request: 300, response: 220 },
+  { date: "2024-11-01", conversation: 180 },
+  { date: "2024-12-01", conversation: 220 },
+  { date: "2025-01-01", conversation: 190 },
+  { date: "2025-01-15", conversation: 250 },
+  { date: "2025-02-01", conversation: 230 },
+  { date: "2025-02-10", conversation: 270 },
+  { date: "2025-02-20", conversation: 250 },
+  { date: "2025-02-25", conversation: 350 },
+  { date: "2025-02-25", conversation: 30 },
+  { date: "2025-02-23", conversation: 300 },
 ];
 
 function Dashbroad() {
@@ -65,6 +69,16 @@ function Dashbroad() {
     dispatch(fetchBlogs(currentPage - 1));
   }, [dispatch, currentPage]);
 
+  // GET Request + Response
+  const { request, response } = useSelector(
+    (state: RootState) => state.dtoMessage
+  );
+
+  useEffect(() => {
+    dispatch(fetchTotalMessages("user"));
+    dispatch(fetchTotalMessages("model"));
+  }, [dispatch]);
+
   return (
     <div className={cx("wrapper")}>
       <Sidebar />
@@ -87,13 +101,13 @@ function Dashbroad() {
           type="request"
           title="Requests"
           icon={<HardDriveUpload size={30} />}
-          total={1000}
+          total={request}
         />
         <Panel
           type="response"
           title="Response"
           icon={<HardDriveDownload size={30} />}
-          total={12000}
+          total={response}
         />
       </div>
 
@@ -101,7 +115,7 @@ function Dashbroad() {
         <ChartArea
           data={chartData}
           config={chartConfig}
-          title="Request - Response"
+          title="Conversations"
           description="Mute Ant Bot."
         />
       </div>
