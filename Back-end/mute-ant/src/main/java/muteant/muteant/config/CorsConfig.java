@@ -68,7 +68,8 @@ public class CorsConfig {
     private String[] getCorsAllowed() {
         List<String> corsAllowOrigins = new ArrayList<>();
         corsAllowOrigins.add("http://localhost:3000");
-        corsAllowOrigins.add("https://42d8-2001-ee0-533d-3f0-acf2-90d1-d205-c4c.ngrok-free.app"); // Thêm ngrok URL vào
+        corsAllowOrigins.add("https://42d8-2001-ee0-533d-3f0-acf2-90d1-d205-c4c.ngrok-free.app");
+        corsAllowOrigins.add("https://mute-ant-ltps-projects-c20a4b38.vercel.app"); // Thêm Vercel
 
         if (!"null".equals(allowOrigin))
             corsAllowOrigins.add(allowOrigin);
@@ -77,5 +78,6 @@ public class CorsConfig {
 
         return corsAllowOrigins.toArray(new String[0]);
     }
+
 
 }
