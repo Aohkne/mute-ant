@@ -49,7 +49,8 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
     if (user === undefined) return;
 
     // ALL
-    if (!user && pathname === "/") return;
+    if (!user && (pathname === "/" || BLOCKED_AFTER_LOGIN.includes(pathname)))
+      return;
 
     // Login mà vào /register /login → Chuyển về "/"
     if (user && BLOCKED_AFTER_LOGIN.includes(pathname)) {
@@ -67,7 +68,9 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
     if (user.role === "ROLE_ADMIN") return;
 
     // Kiểm tra nếu user có quyền vào trang này không
-    const isAllowed = USER_ALLOWED_PATHS.includes(pathname);
+    const isAllowed = USER_ALLOWED_PATHS.some((path) =>
+      pathname.startsWith(path)
+    );
 
     //  Nếu user vào trang không được phép → Chuyển về "/"
     if (!isAllowed) {

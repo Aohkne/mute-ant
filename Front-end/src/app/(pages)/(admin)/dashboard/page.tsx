@@ -15,41 +15,32 @@ import {
   UsersRound,
 } from "lucide-react";
 import { ChartArea } from "@/components/Chart/ChartArea";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/redux/store";
 
 import { fetchUsers } from "@/redux/features/accounts";
-
 import { fetchBlogs } from "@/redux/features/blogs";
-
 import { fetchTotalMessages } from "@/redux/features/messages";
+import { fetchConversationStats } from "@/redux/features/conversation/conversationStatsSlice";
+import dayjs from "dayjs";
 
-//Chart
+// Chart config
 const chartConfig = {
   conversation: { label: "Conversation", color: "hsl(var(--chart-1))" },
-  // response: { label: "Responses", color: "hsl(var(--chart-2))" },
 };
-
-const chartData = [
-  { date: "2024-11-01", conversation: 180 },
-  { date: "2024-12-01", conversation: 220 },
-  { date: "2025-01-01", conversation: 190 },
-  { date: "2025-01-15", conversation: 250 },
-  { date: "2025-02-01", conversation: 230 },
-  { date: "2025-02-10", conversation: 270 },
-  { date: "2025-02-20", conversation: 250 },
-  { date: "2025-02-25", conversation: 350 },
-  { date: "2025-02-25", conversation: 30 },
-  { date: "2025-02-23", conversation: 300 },
-];
 
 function Dashbroad() {
   const dispatch = useDispatch<AppDispatch>();
+  const [mergedData, setMergedData] = useState<Record<string, number>>({});
 
-  // GET User
+  const chartData = Object.entries(mergedData).map(([date, value]) => ({
+    date,
+    conversation: value,
+  }));
+
+  // GET Users
   const { totalPages } = useSelector((state: RootState) => state.accounts);
-
   useEffect(() => {
     dispatch(
       fetchUsers({
@@ -77,6 +68,39 @@ function Dashbroad() {
   useEffect(() => {
     dispatch(fetchTotalMessages("user"));
     dispatch(fetchTotalMessages("model"));
+  }, [dispatch]);
+
+  // GET data of Request + Response last 3 months
+  useEffect(() => {
+    const fetchDataForLast3Months = async () => {
+      const today = dayjs();
+      const aggregatedData: Record<string, number> = {};
+
+      for (let i = 0; i < 3; i++) {
+        const date = today.subtract(i, "month");
+        const year = date.year();
+        const month = date.month() + 1;
+
+        try {
+          const result = await dispatch(
+            fetchConversationStats({ year, month })
+          ).unwrap();
+
+          if (result?.dailyBreakdown) {
+            Object.entries(result.dailyBreakdown).forEach(([date, count]) => {
+              aggregatedData[date] =
+                (aggregatedData[date] || 0) + (count as number);
+            });
+          }
+        } catch (error) {
+          console.error("Error fetching conversation stats:", error);
+        }
+      }
+
+      setMergedData(aggregatedData);
+    };
+
+    fetchDataForLast3Months();
   }, [dispatch]);
 
   return (
@@ -116,7 +140,7 @@ function Dashbroad() {
           data={chartData}
           config={chartConfig}
           title="Conversations"
-          description="Mute Ant Bot."
+          description="Conversation stats for the last 3 months"
         />
       </div>
 

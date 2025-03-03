@@ -27,6 +27,7 @@
     "class-variance-authority": "^0.7.0",
     "classnames": "^2.5.1",
     "clsx": "^2.1.1",
+    "dayjs": "^1.11.13",
     "googleapis": "^146.0.0",
     "i": "^0.3.7",
     "lucide-react": "^0.460.0",
