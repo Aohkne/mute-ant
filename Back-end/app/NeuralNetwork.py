@@ -3,8 +3,9 @@ from sklearn.model_selection import train_test_split
 from tensorflow.keras.utils import to_categorical
 import numpy as np
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import LSTM,Dense
+from tensorflow.keras.layers import LSTM,Dense, Dropout, BatchNormalization, Bidirectional
 from tensorflow.keras.callbacks import TensorBoard
+
 
 DATA_PATH = os.path.join('MP_Data')
 #Actions
@@ -35,22 +36,44 @@ log_dir = os.path.join('Logs')
 tb_callback = TensorBoard(log_dir = log_dir)
 
 model = Sequential()
-model.add(LSTM(64,return_sequences=True, activation='relu', input_shape=(30,258)))
-model.add(LSTM(128,return_sequences=True, activation = 'relu'))
-model.add(LSTM(64, return_sequences = False,activation='relu'))
-model.add(Dense(64,activation='relu'))
-model.add(Dense(32,activation = 'relu'))
-model.add(Dense(actions.shape[0],activation='softmax'))
+# ver 1
+# model.add(LSTM(64,return_sequences=True, activation='relu', input_shape=(30,258)))
+# model.add(LSTM(128,return_sequences=True, activation = 'relu'))
+# model.add(LSTM(64, return_sequences = False,activation='relu'))
+# model.add(Dense(64,activation='relu'))
+# model.add(Dense(32,activation = 'relu'))
+# model.add(Dense(actions.shape[0],activation='softmax'))
+
+# ver 2
+# First BiLSTM layer
+model.add(Bidirectional(LSTM(64, return_sequences=True, activation='relu'), input_shape=(30, 258)))
+model.add(BatchNormalization())
+
+# Second BiLSTM layer
+model.add(Bidirectional(LSTM(64, return_sequences=True, activation='relu')))
+model.add(Dropout(0.3))
+
+# Third BiLSTM layer
+model.add(Bidirectional(LSTM(64, return_sequences=False, activation='relu')))
+model.add(Dropout(0.3))
+
+# Fully connected layers
+model.add(Dense(64, activation='relu'))
+model.add(Dropout(0.2))
+model.add(Dense(32, activation='relu'))
+
+# Output layer
+model.add(Dense(len(actions), activation='softmax'))
 
 res = np.zeros(len(actions))
 print(actions[np.argmax(res)])
 
 model.compile(optimizer = 'Adam',loss='categorical_crossentropy',metrics=['categorical_accuracy'])
 
-model.fit(x_train,y_train,epochs = 150, callbacks=[tb_callback])
+model.fit(x_train,y_train,epochs = 50, callbacks=[tb_callback])
 model.summary()
 
 res = model.predict(x_test)
 print(actions[np.argmax(res[1])])
 print(actions[np.argmax(y_test[1])])
-model.save('action_test.h5')
+model.save('action_test_3.h5')
