@@ -164,11 +164,15 @@ function TableBlogs() {
   const displayedBlogs = filteredBlogs;
 
   //Open Model
-  const handleEdit = (blog: Blog) => {
-    setEditingBlog(blog);
+  const handleEdit = (blog: any) => {
+    const blogWithDefaults: Blog = {
+      ...blog,
+      description: blog.description || "", // Ensure description is a string
+      content: blog.content || "",
+      images: blog.images || [],
+    };
 
-    console.log(editingBlog);
-
+    setEditingBlog(blogWithDefaults);
     setModalOpen(true);
   };
 

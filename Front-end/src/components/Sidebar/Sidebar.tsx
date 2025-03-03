@@ -59,6 +59,8 @@ const Sidebar: React.FC = () => {
     return () => {
       if (timeoutId) clearTimeout(timeoutId);
     };
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isVisible, isLocked]);
 
   useEffect(() => {
