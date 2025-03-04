@@ -11,17 +11,18 @@ import { Button } from "@/components/ui/button";
 
 interface CardProps {
   id: number;
-  img: string;
+  img: string | undefined;
   title: string;
   author: string;
+  description: string | undefined;
 }
 
-function Card({ id, img, title, author }: CardProps) {
+function Card({ id, img, title, author, description }: CardProps) {
   return (
     <div className={cx("wrapper")}>
       <div className={cx("img")}>
         <Image
-          src={img}
+          src={img || "/images/blog/default-img.png"}
           alt="blog-img"
           width={500}
           height={500}
@@ -32,9 +33,18 @@ function Card({ id, img, title, author }: CardProps) {
         className={cx("content", "flex-conlumn", "text-left", "px-5", "py-3")}
       >
         <div className={cx("title", "text-title")}>{title}</div>
-        <div
-          className={cx("description", "text-description", "flex-1", "my-5")}
-        >
+
+        {description && description.length >= 30 ? (
+          <div className={cx("description", "text-title")}>
+            {description.slice(0, 30)}...
+          </div>
+        ) : (
+          <div className={cx("description", "text-description")}>
+            {description}
+          </div>
+        )}
+
+        <div className={cx("author", "text-description", "flex-1", "my-5")}>
           {author}
         </div>
         <div className={cx("action")}>

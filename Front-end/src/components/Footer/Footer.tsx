@@ -30,22 +30,22 @@ function Footer() {
 
         <ul className={cx("icon-list", "flex")}>
           <li className={cx("icon")}>
-            <Link href={"https://github.com/Aohkne/mute-ant"}>
+            <Link href={"mailto:muteant.pro@gmail.com"} target="blank">
               <i className={cx("fa-solid fa-envelope")}></i>
             </Link>
           </li>
           <li className={cx("icon")}>
-            <Link href={"https://github.com/Aohkne/mute-ant"}>
+            <Link href={"https://github.com/Aohkne/mute-ant"} target="blank">
               <i className={cx("fa-brands fa-github")}></i>
             </Link>
           </li>
           <li className={cx("icon")}>
-            <Link href={""}>
+            <Link href={""} target="blank">
               <i className={cx("fa-brands fa-facebook")}></i>
             </Link>
           </li>
           <li className={cx("icon")}>
-            <Link href={""}>
+            <Link href={""} target="blank">
               <i className={cx("fa-brands fa-youtube")}></i>
             </Link>
           </li>

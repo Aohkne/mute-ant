@@ -16,6 +16,7 @@ const VideoStreaming: React.FC<VideoStreamingProps> = ({
   onStreamToggle,
 }) => {
   const [isStreaming, setIsStreaming] = useState(false);
+  const [isCardActive, setIsCardActive] = useState(false);
 
   const toggleStream = () => {
     const newStreamingState = !isStreaming;
@@ -23,11 +24,18 @@ const VideoStreaming: React.FC<VideoStreamingProps> = ({
     onStreamToggle?.(newStreamingState);
   };
 
+  const toggleCardShadow = () => {
+    setIsCardActive((prevState) => !prevState);
+  };
+
   return (
     <div className={cx("video-streaming")}>
       <div className={cx("stream-controls")}>
         <button
-          onClick={toggleStream}
+          onClick={() => {
+            toggleStream();
+            toggleCardShadow();
+          }}
           className={cx({
             streaming: isStreaming,
             "not-streaming": !isStreaming,
@@ -46,7 +54,8 @@ const VideoStreaming: React.FC<VideoStreamingProps> = ({
           )}
         </button>
       </div>
-      <div className={cx("card")}>
+      <div className={cx("card", { active: isCardActive })}>
+        {/* Áp dụng class active */}
         <div className={cx("card-content")}>
           <div className={cx("video-container")}>
             {isStreaming ? (
@@ -61,7 +70,9 @@ const VideoStreaming: React.FC<VideoStreamingProps> = ({
                 />
               </div>
             ) : (
-              <div className={cx("camera-off")}>Camera is off</div>
+              <div className={cx("camera-off", "text-color")}>
+                Camera is off
+              </div>
             )}
           </div>
         </div>

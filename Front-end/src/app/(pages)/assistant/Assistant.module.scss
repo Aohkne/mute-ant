@@ -13,9 +13,8 @@
     padding: 10px;
 
     .title {
-      font-size: 6rem;
+      font-size: 5rem;
       font-weight: 600;
-      margin-bottom: 2rem;
       text-align: left;
 
       @include respond-above(md) {

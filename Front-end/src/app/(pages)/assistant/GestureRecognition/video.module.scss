@@ -13,14 +13,19 @@
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      font-size: 2rem;
-      padding: 0.5rem 1rem;
-      border-radius: 0.5rem;
+      font-weight: 500;
+      font-size: 4.5rem;
+      padding: 5px 15px;
+      margin: 10px 0px;
+      border-radius: 5px;
       color: white;
+      transition: 0.3s ease-in-out;
       z-index: 5;
 
       &.streaming {
         background-color: #ef4444;
+        box-shadow: 0px 0px 0px 0 var(--box-shadow);
+        transform: translateY(10px);
 
         &:hover {
           background-color: #dc2626;
@@ -29,57 +34,59 @@
 
       &.not-streaming {
         background-color: #d07e88;
+        box-shadow: 2px 2px 10px 0 var(--box-shadow);
 
         &:hover {
           background-color: #9b82cf;
+          transform: translateY(10px);
+          box-shadow: 0px 0px 0px 0 var(--box-shadow);
         }
       }
 
       .icon {
-        width: 5rem;
-        height: 5rem;
+        width: 3rem;
+        height: 3rem;
       }
     }
   }
 
   .card {
-    border-radius: 0.5rem;
     overflow: hidden;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    background-color: white;
+    border-radius: 5px;
+    margin: 20px 0;
+    transition: all 0.3s ease-in-out;
 
-    &-header {
-      .card-title {
-        font-size: 1.25rem;
-        font-weight: 600;
+    &.active {
+      transform: translateY(-10px);
+      box-shadow: 0px 4px 6px 0px var(--box-shadow);
+    }
+
+    .video-container {
+      aspect-ratio: 16 / 9;
+      background-color: #f3f4f6;
+      border-radius: 0.5rem;
+      overflow: hidden;
+      position: relative;
+      height: 100%;
+
+      .camera-off {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        font-size: 10rem;
+        font-weight: 500;
+        height: 100%;
+        background-color: var(--background-camera);
       }
-    }
-  }
 
-  .video-container {
-    aspect-ratio: 16 / 9;
-    background-color: #f3f4f6;
-    border-radius: 0.5rem;
-    overflow: hidden;
-    position: relative;
-    height: 100%;
+      .video-wrapper {
+        width: 100%;
+        height: 100%;
 
-    .camera-off {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      color: #9ca3af;
-      font-size: 10rem;
-      height: 100%;
-    }
-
-    .video-wrapper {
-      width: 100%;
-      height: 100%;
-
-      img {
-        object-fit: cover;
+        img {
+          object-fit: cover;
+        }
       }
     }
   }

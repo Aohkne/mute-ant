@@ -17,9 +17,8 @@ import java.util.List;
 @AllArgsConstructor
 public class BlogEntity extends BaseEntity {
 
-    @OneToOne(targetEntity = AccountEntity.class, fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST})
-    @JoinColumn(name = "author_id", nullable = false)
-    private AccountEntity authorId;
+    @Column(name = "author", nullable = false)
+    private String author;
 
     @Column(name = "title", nullable = false, length = 255)
     private String title;

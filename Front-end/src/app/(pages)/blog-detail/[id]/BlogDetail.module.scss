@@ -1,6 +1,14 @@
 @import "../../../../styles/mixin.scss";
 
 .wrapper {
+  .img {
+    margin: -22px 0 20px;
+    img {
+      width: 100%;
+      height: auto;
+    }
+  }
+
   .title {
     margin: 60px 0 0;
     font-size: 8rem;
@@ -14,14 +22,6 @@
     @include respond-above(md) {
       font-size: 4.5rem;
       font-weight: 600;
-    }
-  }
-
-  .img {
-    margin: 20px 0;
-    img {
-      width: 100%;
-      height: auto;
     }
   }
 
@@ -42,8 +42,39 @@
 
   .content {
     margin: 20px 0;
-    font-size: 1.8rem;
+    font-size: 2rem;
     font-weight: 300;
+    line-height: 2;
+
+    p {
+      margin: 0;
+      font-size: 2rem;
+    }
+
+    img {
+      object-fit: cover;
+      width: 100%;
+      padding: 0 10px;
+      margin: 20px 0;
+    }
+
+    strong,
+    em,
+    u {
+      font-size: inherit;
+    }
+
+    strong {
+      font-weight: bold;
+    }
+
+    em {
+      font-style: italic;
+    }
+
+    u {
+      text-decoration: underline;
+    }
   }
 
   .source {

@@ -10,18 +10,20 @@ const cx = classNames.bind(styles);
 
 export default function Assistant() {
   return (
-    <div className={cx("wrapper")}>
-      <div className={cx("header")}>
-        <Header />
-      </div>
+    <>
+      <div className={cx("wrapper")}>
+        <div className={cx("header")}>
+          <Header />
+        </div>
 
-      <main className={cx("content")}>
-        <h1 className={cx("title", "text-gradient-3")}>
-          Hand Sign Recognition
-        </h1>
-        <VideoStreaming />
-      </main>
+        <main className={cx("content")}>
+          <h1 className={cx("title", "text-gradient-3")}>
+            Hand Sign Recognition
+          </h1>
+          <VideoStreaming />
+        </main>
+      </div>
       <Footer />
-    </div>
+    </>
   );
 }

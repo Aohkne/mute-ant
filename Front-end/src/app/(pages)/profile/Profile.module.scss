@@ -1,0 +1,13 @@
+@import "../../../styles/mixin.scss";
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 10px 45px;
+  height: 100vh;
+
+  @include respond-above(md) {
+    padding: 10px 10px;
+  }
+}

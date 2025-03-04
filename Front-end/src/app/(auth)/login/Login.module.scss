@@ -33,7 +33,7 @@
 
     .logo {
       position: absolute;
-      top: -8%;
+      top: -10%;
       left: 5%;
       width: auto;
       height: 50px;
@@ -43,7 +43,7 @@
       font-size: 5rem;
       line-height: 5.5rem;
       font-weight: 800;
-      padding: 0 15px;
+      padding: 0 30px;
     }
 
     .description {
@@ -104,37 +104,41 @@
           box-shadow: 2px 2px 5px 0 inset #00000059;
         }
       }
-    }
 
-    .btn {
-      color: var(--white);
-      padding: 5px 25px;
-      border-radius: 10px;
-      border: 2px solid transparent;
-
-      span {
-        display: inline-block;
-        font-size: 1.8rem;
-        font-weight: 600;
-      }
-
-      &:hover {
+      .btn {
+        margin: 20px 0 0;
+        color: var(--white);
+        padding: 5px 25px;
+        border-radius: 10px;
         border: 2px solid transparent;
-        background-clip: padding-box, border-box;
-        background-origin: border-box;
-        background-image: linear-gradient(var(--background), var(--background)),
-          linear-gradient(90deg, #d07e88 11.63%, #759bce 40.43%, #9b82cf 68%);
 
         span {
-          background: linear-gradient(
-            72.83deg,
-            #d07e88 11.63%,
-            #759bce 40.43%,
-            #d07e88 68.07%
-          );
-          -webkit-background-clip: text;
-          background-clip: text;
-          color: transparent;
+          display: inline-block;
+          font-size: 1.8rem;
+          font-weight: 600;
+        }
+
+        &:hover {
+          border: 2px solid transparent;
+          background-clip: padding-box, border-box;
+          background-origin: border-box;
+          background-image: linear-gradient(
+              var(--background),
+              var(--background)
+            ),
+            linear-gradient(90deg, #d07e88 11.63%, #759bce 40.43%, #9b82cf 68%);
+
+          span {
+            background: linear-gradient(
+              72.83deg,
+              #d07e88 11.63%,
+              #759bce 40.43%,
+              #d07e88 68.07%
+            );
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+          }
         }
       }
     }
@@ -160,20 +164,24 @@
 /* Animation */
 @keyframes open-float-right {
   0% {
-    transform: translateX(-1000px);
+    transform: translateX(1000px);
     max-height: 0;
   }
 
   25% {
-    transform: translateX(-750px);
+    transform: translateX(750px);
   }
 
   50% {
-    transform: translateX(-500px);
+    transform: translateX(500px);
+  }
+
+  75% {
+    transform: translateX(250px);
   }
 
   80% {
-    transform: translateX(-150px);
+    transform: translateX(150px);
   }
 
   100% {

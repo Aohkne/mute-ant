@@ -23,8 +23,6 @@ public interface BlogService {
 
     void unpublishBlog(Long id, Long requestUserId);
 
-    List<BlogResponse> getBlogsByAuthorId(Long authorId);
-
     List<BlogResponse> getBlogsByStatus(String title);
 
     List<BlogResponse> filterBlog(String title, String status, Long authorId);

@@ -52,18 +52,24 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthResponse memberLocalAuthentication(AuthRequest authRequest) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
+        );
         SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        AccountEntity account = accountRepository.findByUsername(authRequest.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
         String accessToken = jwtService.generateToken(authentication, JwtTokenType.ACCESS_TOKEN);
         String refreshToken = jwtService.generateToken(authentication, JwtTokenType.REFRESH_TOKEN);
 
-        // Get the first role as a string instead of a list
         String role = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .findFirst()
                 .orElse(null);
 
         return AuthResponse.builder()
+                .userId(account.getId())
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .role(role)
@@ -98,6 +104,7 @@ public class AuthServiceImpl implements AuthService {
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .role(role)
+                .userId(account.getId())
                 .build();
     }
 

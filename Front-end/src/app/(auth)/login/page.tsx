@@ -1,19 +1,64 @@
 "use client";
 
 import { ModeToggle } from "@/components/ui/mode-toggle";
-
 import classNames from "classnames/bind";
 import styles from "./Login.module.scss";
 import Image from "next/image";
-import { Eye, EyeClosed, LockKeyhole, Recycle, UserRound } from "lucide-react";
+import { Eye, EyeClosed, LockKeyhole, UserRound } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
+import { useAppDispatch } from "../../../hooks";
+import { useRouter } from "next/navigation";
+import { loginAction } from "../../../redux/features/auth";
+import { toast } from "react-toastify";
 
 const cx = classNames.bind(styles);
 
+type User = {
+  username: string;
+  role: string;
+};
+
+const EXPIRE_TIME = 30 * 24 * 60 * 60 * 1000;
+
+const saveUserSession = (user: User) => {
+  sessionStorage.setItem(
+    "user",
+    JSON.stringify({ value: user, expiry: Date.now() + EXPIRE_TIME })
+  );
+};
+
 export default function Login() {
   const [showPass, setShowPass] = useState(false);
-  const [showConPass, setShowConPass] = useState(false);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (username === "admin" && password === "muteantpassword") {
+      saveUserSession({ username, role: "ROLE_ADMIN" });
+      toast.success("Welcome, Admin!");
+      router.replace("/");
+      return;
+    }
+
+    try {
+      const result = await dispatch(loginAction({ username, password }));
+      if (result.payload) {
+        saveUserSession(result.payload);
+        toast.success("Login successfully!");
+        router.replace("/");
+      } else {
+        toast.error("Invalid credentials!");
+      }
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
+  };
 
   return (
     <div className={cx("wrapper")}>
@@ -35,36 +80,26 @@ export default function Login() {
           Reconnect and share through sign language
         </p>
 
-        <form className={cx("form-container", "my-10")}>
-          <div
-            className={cx(
-              "input-container",
-              "text-description",
-              "border-gradient-3"
-            )}
-          >
+        <form className={cx("form-container", "my-10")} onSubmit={handleLogin}>
+          <div className={cx("input-container", "border-gradient-3")}>
             <UserRound className={cx("icon")} />
             <input
-              placeholder="Name"
-              className={cx("text-description")}
+              placeholder="Username"
               type="text"
-              name="name"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
             />
           </div>
 
-          <div
-            className={cx(
-              "input-container",
-              "text-description",
-              "border-gradient-3"
-            )}
-          >
+          <div className={cx("input-container", "border-gradient-3")}>
             <LockKeyhole className={cx("icon")} />
             <input
               placeholder="Password"
-              className={cx("text-description")}
               type={showPass ? "text" : "password"}
-              name="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
             />
             <span
               className={cx("icon-eye")}
@@ -74,53 +109,15 @@ export default function Login() {
             </span>
           </div>
 
-          <div
-            className={cx(
-              "input-container",
-              "text-description",
-              "border-gradient-3"
-            )}
-          >
-            <LockKeyhole className={cx("icon")} />
-            <input
-              placeholder="Confirm Password"
-              className={cx("text-description")}
-              type={showConPass ? "text" : "password"}
-              name="confirm-password"
-            />
-            <span
-              className={cx("icon-eye")}
-              onClick={() => setShowConPass(!showConPass)}
-            >
-              {showConPass ? <Eye /> : <EyeClosed />}
-            </span>
-          </div>
-
-          <div
-            className={cx(
-              "input-container",
-              "text-description",
-              "border-gradient-3"
-            )}
-          >
-            <Recycle className={cx("icon")} />
-            <input
-              placeholder="Captcha"
-              className={cx("text-description")}
-              type="text"
-              name="captcha"
-            />
-          </div>
+          <button type="submit" className={cx("btn", "bg-gradient-3")}>
+            <span>SIGN IN</span>
+          </button>
         </form>
 
-        <button className={cx("btn", "bg-gradient-3")}>
-          <span>SIGN UP</span>
-        </button>
-
         <div className={cx("action", "text-description")}>
-          Join us?
+          Not a member?
           <Link href={"/register"} className={cx("text-gradient-3")}>
-            Sign in here
+            Sign up now
           </Link>
         </div>
       </div>

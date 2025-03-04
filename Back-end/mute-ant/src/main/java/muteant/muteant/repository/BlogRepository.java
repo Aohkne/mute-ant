@@ -12,15 +12,14 @@ import java.util.Optional;
 @Repository
 public interface BlogRepository extends BaseRepository<BlogEntity, Long> {
     Optional<BlogEntity> findByStatus(String status);
-    Optional<BlogEntity> findByAuthorId(AccountEntity authorId);
 
     @Query("SELECT b FROM BlogEntity b WHERE " +
             "(:title IS NULL OR LOWER(b.title) LIKE LOWER(CONCAT('%', :title, '%'))) AND " +
             "(:status IS NULL OR b.status = :status) AND " +
-            "(:authorId IS NULL OR b.authorId.id = :authorId)")
+            "(:authorId IS NULL OR b.author = :author)")
     List<BlogEntity> filterBlogs(
             @Param("title") String title,
             @Param("status") String status,
-            @Param("authorId") Long authorId
+            @Param("author") Long author
     );
 }

@@ -10,7 +10,7 @@ import java.util.List;
 @Builder
 public class BlogResponse {
     private Long id;
-    private String authorName;
+    private String author;
     private String title;
     private String description;
     private String content;

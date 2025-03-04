@@ -1,4 +1,5 @@
 .wrapper {
+  height: 100%;
   overflow: hidden;
   border-radius: 15px;
   background: #ffffff80;
@@ -22,6 +23,11 @@
     }
 
     .description {
+      font-size: 1.5rem;
+      font-weight: 300;
+    }
+
+    .author {
       font-size: 1.2rem;
       font-weight: 200;
     }
