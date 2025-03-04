@@ -20,32 +20,31 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.sql.Date;
-import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 public class JwtServiceImpl implements JwtService {
     private final JwtTokenConfig jwtTokenConfig;
+
     public String generateToken(Authentication authentication, JwtTokenType tokenType) {
         UserDetails user = (UserDetails) authentication.getPrincipal();
         var roles = user.getAuthorities().toArray(new GrantedAuthority[0]);
-        return generateToken(user.getUsername(), Arrays.stream(roles).map(GrantedAuthority::getAuthority).toList(),tokenType);
+        return generateToken(user.getUsername(), Arrays.stream(roles).map(GrantedAuthority::getAuthority).toList(), tokenType);
     }
 
-    public Claims generateClaims (UserClaims claimInfo) {
+    public Claims generateClaims(UserClaims claimInfo) {
         Claims claims = Jwts.claims();
         claims.put("user", claimInfo);
         return claims;
     }
+
     public String generateToken(String username, List<String> role, JwtTokenType tokenType) {
         Date currentDate = new Date(System.currentTimeMillis());
         Date expiryDate = null;
         if(tokenType == JwtTokenType.ACCESS_TOKEN) {
             expiryDate = new Date(currentDate.getTime() + jwtTokenConfig.getJwtExpiration());
-        }else if (tokenType == JwtTokenType.REFRESH_TOKEN) {
+        } else if (tokenType == JwtTokenType.REFRESH_TOKEN) {
             expiryDate = new Date(currentDate.getTime() + jwtTokenConfig.getJwtRefreshExpiration());
         }
         return Jwts.builder()
@@ -62,11 +61,16 @@ public class JwtServiceImpl implements JwtService {
     }
 
     public String generateToken(UserClaims userClaims) {
-        return generateToken(userClaims.getUsername(),userClaims.getRoles(),userClaims.getTokenType());
+        return generateToken(userClaims.getUsername(), userClaims.getRoles(), userClaims.getTokenType());
     }
+
     private SecretKey getSigningKey(JwtTokenType tokenType) {
-        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(tokenType == JwtTokenType.ACCESS_TOKEN ? jwtTokenConfig.getJwtSecret() : jwtTokenConfig.getJwtRefreshSecret()));
+        String secretKey = tokenType == JwtTokenType.ACCESS_TOKEN ?
+                jwtTokenConfig.getJwtSecret() : jwtTokenConfig.getJwtRefreshSecret();
+        byte[] keyBytes = Base64.getDecoder().decode(secretKey);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
+
     public Optional<UserClaims> getUserClaimsFromJwt(String token, JwtTokenType tokenType) {
         try {
             var claims = Jwts.parserBuilder()
@@ -89,16 +93,21 @@ public class JwtServiceImpl implements JwtService {
                 .orElse(Optional.empty());
     }
 
-    public Cookie tokenCookieWarp (String token, JwtTokenType tokenType) {
+    public Cookie tokenCookieWarp(String token, JwtTokenType tokenType) {
         var cookie = new Cookie(tokenType.toString(), token);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
-        cookie.setMaxAge((int) (tokenType == JwtTokenType.ACCESS_TOKEN ? jwtTokenConfig.getJwtExpiration() : jwtTokenConfig.getJwtRefreshExpiration()));
+        cookie.setMaxAge((int) (tokenType == JwtTokenType.ACCESS_TOKEN ?
+                jwtTokenConfig.getJwtExpiration() : jwtTokenConfig.getJwtRefreshExpiration()));
         return cookie;
     }
-    public void removeAuthToken (HttpServletRequest request,HttpServletResponse response) {
-        var authCookie = Arrays.stream(request.getCookies()).filter(cookie -> cookie.getName().equals(JwtTokenType.ACCESS_TOKEN.toString()) || cookie.getName().equals(JwtTokenType.REFRESH_TOKEN.name()) ).toList();
+
+    public void removeAuthToken(HttpServletRequest request, HttpServletResponse response) {
+        var authCookie = Arrays.stream(request.getCookies())
+                .filter(cookie -> cookie.getName().equals(JwtTokenType.ACCESS_TOKEN.toString()) ||
+                        cookie.getName().equals(JwtTokenType.REFRESH_TOKEN.name()))
+                .toList();
         authCookie.forEach(cookie -> {
             cookie.setMaxAge(0);
             cookie.setPath("/");
@@ -122,9 +131,9 @@ public class JwtServiceImpl implements JwtService {
                     .setSigningKey(getSigningKey(tokenType))
                     .build()
                     .parseClaimsJws(token);
+            return true;  // Token is valid if no exception is thrown
         } catch (Exception ex) {
-            return true;
+            return false;  // Token is invalid if an exception is thrown
         }
-        return false;
     }
 }

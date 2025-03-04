@@ -1,9 +1,10 @@
-FROM openjdk:23 AS builder
-WORKDIR /build
-COPY . .
-RUN ./gradlew build --no-daemon
+FROM openjdk:23-jdk-slim
 
-FROM openjdk:23
-WORKDIR /app
-COPY --from=builder /build/build/libs/*.jar /app/app.jar
-CMD ["java", "-jar", "app.jar"]
+ARG JAR_FILE=build/libs/*.jar
+COPY ${JAR_FILE} app.jar
+COPY .env .env
+
+# Load environment variables from .env
+RUN export $(grep -v '^#' .env | xargs)
+
+ENTRYPOINT ["java", "-jar", "/app.jar"]

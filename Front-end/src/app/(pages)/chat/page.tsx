@@ -36,7 +36,7 @@ const Chatbot: React.FC = () => {
     {
       role: "model",
       parts:
-        "Rất hân hạnh được gặp bạn. Mình là mute-ant, chatbot của bạn. Bạn có muốn hỏi gì về khiếm thính, ngôn ngữ kí hiệu không?",
+        "Nice to meet you. I'm mute-ant, your chatbot. Do you have any questions about deafness, sign language?",
     },
   ]);
   const messageContainerRef = useRef<HTMLDivElement | null>(null);
@@ -228,7 +228,7 @@ const Chatbot: React.FC = () => {
                         })}
                       >
                         <Image
-                          alt={item.sender === "model" ? "Gemini" : "User"}
+                          alt={item.sender === "model" ? "Mute-ant" : "User"}
                           src={
                             item.sender === "model"
                               ? "/images/ant.png"
