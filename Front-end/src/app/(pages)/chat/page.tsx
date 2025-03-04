@@ -36,7 +36,7 @@ const Chatbot: React.FC = () => {
     {
       role: "model",
       parts:
-        "Rất hân hạnh được gặp bạn. Mình là mute-ant, chatbot của bạn. Bạn có muốn hỏi gì về khiếm thính, ngôn ngữ kí hiệu không?",
+        "Nice to meet you. I'm mute-ant, your chatbot. Do you have any questions about deafness, sign language?",
     },
   ]);
   const messageContainerRef = useRef<HTMLDivElement | null>(null);
@@ -142,7 +142,7 @@ const Chatbot: React.FC = () => {
         const newHistory = oldHistory.slice(0, oldHistory.length - 1);
         newHistory.push({
           role: "model",
-          parts: "Oops! Đã xảy ra lỗi. Vui lòng thử lại.",
+          parts: "Oops! Something wrong, please try again!",
         });
         return newHistory;
       });
@@ -163,7 +163,7 @@ const Chatbot: React.FC = () => {
       {
         role: "model",
         parts:
-          "Rất hân hạnh được gặp bạn. Mình là mute-ant, chatbot của bạn. Bạn có muốn hỏi gì về khiếm thính, ngôn ngữ kí hiệu không?",
+          "Nice to meet you. I'm mute-ant, your chatbot. Do you have any questions about deafness, sign language?",
       },
     ]);
     setInput("");
@@ -193,8 +193,7 @@ const Chatbot: React.FC = () => {
     dispatch(fetchChatHistory(id));
   }
 
-  const { messages } = useSelector((state: RootState) => state.chatHistory);
-
+  const messages = useSelector((state: RootState) => state.chatHistory?.messages) || [];
   return (
     <div className={cx("wrapper")}>
       <NavChat onSelectHistory={handleSelectHistory} />
@@ -207,7 +206,7 @@ const Chatbot: React.FC = () => {
         <main className={cx("content")}>
           <div className={cx("chat-container")}>
             <div className={cx("message-container")} ref={messageContainerRef}>
-              {messages.length > 0 &&
+              {Array.isArray(messages) && messages.length > 0 &&
                 messages.map((item, index) => (
                   <div
                     key={index}
@@ -229,7 +228,7 @@ const Chatbot: React.FC = () => {
                         })}
                       >
                         <Image
-                          alt={item.sender === "model" ? "Gemini" : "User"}
+                          alt={item.sender === "model" ? "Mute-ant" : "User"}
                           src={
                             item.sender === "model"
                               ? "/images/ant.png"
@@ -260,57 +259,58 @@ const Chatbot: React.FC = () => {
                   </div>
                 ))}
 
-              {history.map((item, index) => (
-                <div
-                  key={index}
-                  className={cx(
-                    "chat-message",
-                    {
-                      "message-start": item.role === "model",
-                      "message-end": item.role !== "model",
-                    },
-                    {
-                      user: item.role !== "model",
-                    }
-                  )}
-                >
-                  <div className={cx("avatar-container")}>
+              {Array.isArray(history) &&
+                history.map((item, index) => (
+                  <div
+                    key={index}
+                    className={cx(
+                      "chat-message",
+                      {
+                        "message-start": item.role === "model",
+                        "message-end": item.role !== "model",
+                      },
+                      {
+                        user: item.role !== "model",
+                      }
+                    )}
+                  >
+                    <div className={cx("avatar-container")}>
+                      <div
+                        className={cx("avatar-wrapper", {
+                          user: item.role !== "model",
+                        })}
+                      >
+                        <Image
+                          alt={item.role === "model" ? "Mute-ant" : "User"}
+                          src={
+                            item.role === "model"
+                              ? "/images/ant.png"
+                              : "/images/author/LHK.png"
+                          }
+                          width={50}
+                          height={50}
+                          className={cx("avatar-image")}
+                        />
+                      </div>
+                    </div>
+
                     <div
-                      className={cx("avatar-wrapper", {
+                      className={cx("message-bubble", {
                         user: item.role !== "model",
                       })}
                     >
-                      <Image
-                        alt={item.role === "model" ? "Gemini" : "User"}
-                        src={
-                          item.role === "model"
-                            ? "/images/ant.png"
-                            : "/images/author/LHK.png"
-                        }
-                        width={50}
-                        height={50}
-                        className={cx("avatar-image")}
-                      />
+                      <div
+                        className={cx(
+                          item.role !== "model"
+                            ? "chat-text-user"
+                            : "chat-text-bot"
+                        )}
+                      >
+                        <Markdown>{item.parts}</Markdown>
+                      </div>
                     </div>
                   </div>
-
-                  <div
-                    className={cx("message-bubble", {
-                      user: item.role !== "model",
-                    })}
-                  >
-                    <div
-                      className={cx(
-                        item.role !== "model"
-                          ? "chat-text-user"
-                          : "chat-text-bot"
-                      )}
-                    >
-                      <Markdown>{item.parts}</Markdown>
-                    </div>
-                  </div>
-                </div>
-              ))}
+                ))}
             </div>
           </div>
 

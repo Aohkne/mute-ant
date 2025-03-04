@@ -86,6 +86,13 @@ If you want see the database lick the arrow down of "public"
 
 then run the project in intelliji
 
+### Build docker after each edit(remove the old one)
+
+```
+docker compose down
+docker compose up --build -d
+```
+
 ### Swagger UI
 
 After run the project then enter this link to access swagger API

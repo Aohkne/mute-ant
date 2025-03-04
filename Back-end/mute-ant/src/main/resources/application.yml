@@ -22,8 +22,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ${MAIL_USERNAME:email_here}
-    password: ${MAIL_PASSWORD:password_here}
+    username: ${MAIL_USERNAME:emailhere}
+    password: ${MAIL_PASSWORD:passwordhere}
     properties:
       mail:
         smtp:
@@ -58,10 +58,10 @@ base-urls:
   front-end: ${ORIGIN_ALLOWED:null}
 access-token:
   max-age: ${ACCESS_TOKEN_EXT:86400000}
-  secret-key: ${ACCESS_TOKEN_KEY:longAndComplexSecretKeyWithAtLeast64BytesOfRandomness}
+  secret-key: ${ACCESS_TOKEN_KEY:Yh3oG7lU2KD1F9TzJbqPbCrg5MwQdVt9D1FzJbqPbCrg5MwQdVt9}
 
 refresh-token:
   max-age: ${REFRESH_TOKEN_EXT:315360000}
-  secret-key: ${REFRESH_TOKEN_KEY:anotherLongAndComplexSecretKeyDifferentFromTheAccessTokenKey}
+  secret-key: ${REFRESH_TOKEN_KEY:Yh3oG7lU2KD1F9TzJbqPbCrg5MwQdVt9D1FzJbqPbCrg5MwQdVt9}
 
 swagger-url: ${SWAGGER_URL:null}
