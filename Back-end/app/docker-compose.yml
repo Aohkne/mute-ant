@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    devices:
+      - "/dev/video0:/dev/video0"  # Ánh xạ camera
+    environment:
+      - DISPLAY=$DISPLAY
+    volumes:
+      - ./:/app
+      - /tmp/.X11-unix:/tmp/.X11-unix  # Hỗ trợ hiển thị X11 (nếu cần)

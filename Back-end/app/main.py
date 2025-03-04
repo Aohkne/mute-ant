@@ -25,8 +25,8 @@ CORS(app)
 
 # Initialize Recognizers
 config = Config()
-word_recognizer = WordRecognizer()
-hand_recognizer = HandGestureRecognizer(config)
+word_recognizer = WordRecognizer(draw_landmarks=False) #Dont draw a landmark
+hand_recognizer = HandGestureRecognizer(config, draw_landmarks=False) #Dont draw a landmark
 
 def generate_frames_letters():
     """Continuously generates frames for letter recognition mode."""
@@ -70,6 +70,10 @@ def video_feed_word():
 def status():
     """Check current status."""
     return jsonify({"status": "running"})
+
+@app.route('/')
+def index():
+    return "Flask server is running successfully!"
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
