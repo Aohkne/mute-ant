@@ -6,14 +6,14 @@ import styles from "./Profile.module.scss";
 import classNames from "classnames/bind";
 const cx = classNames.bind(styles);
 
-const user = {
-  img: "",
-  fullname: "user",
-  username: "username",
-  gmail: "user@gmail.com",
-  birthday: "2004-02-02",
-  gender: "female",
-};
+// const user = {
+//   img: "",
+//   fullname: "user",
+//   username: "username",
+//   gmail: "user@gmail.com",
+//   birthday: "2004-02-02",
+//   gender: "female",
+// };
 
 const admin = {
   img: "",
