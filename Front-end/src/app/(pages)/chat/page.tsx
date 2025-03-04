@@ -142,7 +142,7 @@ const Chatbot: React.FC = () => {
         const newHistory = oldHistory.slice(0, oldHistory.length - 1);
         newHistory.push({
           role: "model",
-          parts: "Oops! Đã xảy ra lỗi. Vui lòng thử lại.",
+          parts: "Oops! Something wrong, please try again!",
         });
         return newHistory;
       });
@@ -163,7 +163,7 @@ const Chatbot: React.FC = () => {
       {
         role: "model",
         parts:
-          "Rất hân hạnh được gặp bạn. Mình là mute-ant, chatbot của bạn. Bạn có muốn hỏi gì về khiếm thính, ngôn ngữ kí hiệu không?",
+          "Nice to meet you. I'm mute-ant, your chatbot. Do you have any questions about deafness, sign language?",
       },
     ]);
     setInput("");
@@ -281,7 +281,7 @@ const Chatbot: React.FC = () => {
                         })}
                       >
                         <Image
-                          alt={item.role === "model" ? "Gemini" : "User"}
+                          alt={item.role === "model" ? "Mute-ant" : "User"}
                           src={
                             item.role === "model"
                               ? "/images/ant.png"

@@ -1,24 +1,23 @@
-# Dùng image nhỏ gọn
-FROM node:18-alpine
+# Sử dụng Node.js chính thức
+FROM node:18-alpine 
 
-# Thiết lập thư mục làm việc
-WORKDIR /app
+# Đặt thư mục làm việc trong container
+WORKDIR /app 
 
-# Copy file package.json và package-lock.json trước để tối ưu cache layer
-COPY package*.json ./
+# Copy file package.json và package-lock.json trước để tối ưu cache
+COPY package*.json ./ 
 
 # Cài đặt dependencies
-RUN npm install
+RUN npm install 
 
-# Copy toàn bộ mã nguồn
+# Copy toàn bộ project vào container, ngoại trừ những file trong `.dockerignore`
 COPY . .
 
-# Thiết lập biến môi trường build-time (Next.js chỉ nhận trong quá trình build)
-ARG NODE_ENV=development
-ENV NODE_ENV=$NODE_ENV
+# Build Next.js
+RUN npm run build 
 
 # Expose cổng 3000
-EXPOSE 3000
+EXPOSE 3000 
 
-# Khởi chạy ứng dụng
+# Chạy ứng dụng
 CMD ["npm", "run", "dev"]
