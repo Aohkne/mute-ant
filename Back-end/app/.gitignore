@@ -1,1 +1,9 @@
 /venv
+Back-end/app/MP_Data
+Back-end/app/__pycache__/main.cpython-310.pyc
+Back-end/app/__pycache__/HandGestureRegconizer.cpython-310.pyc
+Back-end/app/__pycache__/WordRecognizer.cpython-310.pyc
+Back-end/app/__pycache__/app.cpython-310.pyc
+Back-end/app/model/keypoint_classifier/__pycache__/keypoint_classifier.cpython-310.pyc
+Back-end/app/model/keypoint_classifier/__pycache__/keypoint_classifier.cpython-312.pyc
+Back-end/app/model/keypoint_classifier/__pycache__/wlasl_model.cpython-310.pyc
