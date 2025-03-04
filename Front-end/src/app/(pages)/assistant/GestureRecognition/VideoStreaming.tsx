@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Image from "next/image";
-import { Play, Square } from "lucide-react";
+import { Play, Square, ToggleLeft, ToggleRight } from "lucide-react";
 import classNames from "classnames/bind";
 import styles from "./video.module.scss";
 
@@ -17,6 +17,7 @@ const VideoStreaming: React.FC<VideoStreamingProps> = ({
 }) => {
   const [isStreaming, setIsStreaming] = useState(false);
   const [isCardActive, setIsCardActive] = useState(false);
+  const [isWordMode, setIsWordMode] = useState(true);
 
   const toggleStream = () => {
     const newStreamingState = !isStreaming;
@@ -28,9 +29,13 @@ const VideoStreaming: React.FC<VideoStreamingProps> = ({
     setIsCardActive((prevState) => !prevState);
   };
 
+  const toggleMode = () => {
+    setIsWordMode((prevMode) => !prevMode);
+  };
+
   return (
     <div className={cx("video-streaming")}>
-      <div className={cx("stream-controls")}>
+      <div className={cx("stream-controls")} style={{ flexDirection: 'column', alignItems: 'center' }}>
         <button
           onClick={() => {
             toggleStream();
@@ -53,15 +58,27 @@ const VideoStreaming: React.FC<VideoStreamingProps> = ({
             </>
           )}
         </button>
+        <button onClick={toggleMode} className={cx("toggle-button")}>
+          {isWordMode ? (
+            <>
+              <ToggleRight className={cx("icon")} />
+              <span>Switch to Letter Mode</span>
+            </>
+          ) : (
+            <>
+              <ToggleLeft className={cx("icon")} />
+              <span>Switch to Word Mode</span>
+            </>
+          )}
+        </button>
       </div>
       <div className={cx("card", { active: isCardActive })}>
-        {/* Áp dụng class active */}
         <div className={cx("card-content")}>
           <div className={cx("video-container")}>
             {isStreaming ? (
               <div className={cx("video-wrapper")}>
                 <Image
-                  src={`${backendUrl}/video_feed`}
+                  src={`${backendUrl}/${isWordMode ? "video_feed_word" : "video_feed_letter"}`}
                   alt="Processed Video Feed"
                   fill
                   className={cx("video-feed")}

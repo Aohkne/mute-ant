@@ -1,7 +1,7 @@
 import numpy as np
 import tensorflow as tf
 from tensorflow.keras.models import load_model
-from model.keypoint_classifier.wlasl_model import Initialise_model
+# from model.keypoint_classifier.wlasl_model import Initialise_model
 
 # CNN Model
 class KeyPointClassifier(object):
