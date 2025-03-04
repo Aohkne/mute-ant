@@ -43,7 +43,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     setUser(getUserSession());
-  }, []);
+  }, [pathname]);
 
   useEffect(() => {
     if (user === undefined) return;
