@@ -18,7 +18,7 @@
   transition: all 0.3s ease;
 
   &:hover {
-    width: 750px;
+    width: 850px;
     border-radius: 95px;
 
     @include respond-above(md) {
@@ -39,7 +39,7 @@
 
   .nav-item {
     width: 100%;
-    a {
+    a{
       font-size: 2rem;
       font-weight: 700;
       margin: 0 50px;

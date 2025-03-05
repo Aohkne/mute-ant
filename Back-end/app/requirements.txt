@@ -1,6 +1,9 @@
 flask
 flask-cors
-opencv-python-headless
-keyboard
-numpy
+opencv-python
 mediapipe
+numpy
+tensorflow
+keyboard
+gtts
+pygame
