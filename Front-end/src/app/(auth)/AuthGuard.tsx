@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 
@@ -8,83 +7,92 @@ type User = {
   role: string;
 };
 
-// User
+// Paths allowed for regular users
 const USER_ALLOWED_PATHS = [
   "/blog",
   "/blog-detail",
   "/chat",
   "/profile",
   "/assistant",
+  "/"
 ];
 
-// Login thì không vào được
+// Paths allowed for admin users (in addition to user paths)
+const ADMIN_ADDITIONAL_PATHS = [
+  "/dashboard",
+  "/profile",
+  "/management-blogs",
+  "/management-users",
+];
+
+// Paths blocked after login
 const BLOCKED_AFTER_LOGIN = ["/register", "/login"];
 
-// Hàm lấy session
+// Function to get user session
 const getUserSession = (): User | null => {
   if (typeof window === "undefined") return null;
   const itemStr = sessionStorage.getItem("user");
   if (!itemStr) return null;
-
   const item = JSON.parse(itemStr);
   if (Date.now() > item.expiry) {
     sessionStorage.removeItem("user");
     return null;
   }
-
   return item.value as User;
 };
 
 // Component AuthGuard
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null | undefined>(undefined);
+  const [isFirstLogin, setIsFirstLogin] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
-    setUser(getUserSession());
+    const sessionUser = getUserSession();
+    setUser(sessionUser);
+
+    if (sessionUser?.role === "ROLE_ADMIN" && pathname !== "/dashboard") {
+      setIsFirstLogin(true);
+    }
   }, [pathname]);
 
   useEffect(() => {
     if (user === undefined) return;
 
-    // ALL
+    if (isFirstLogin && user?.role === "ROLE_ADMIN") {
+      setIsFirstLogin(false);
+      return;
+    }
+
     if (!user && (pathname === "/" || BLOCKED_AFTER_LOGIN.includes(pathname)))
       return;
 
-    // Login mà vào /register /login → Chuyển về "/"
     if (user && BLOCKED_AFTER_LOGIN.includes(pathname)) {
       router.replace("/");
       return;
     }
 
-    // Chưa Login → Chuyển về "/login"
     if (!user) {
       router.replace("/login");
       return;
     }
-
-    // ADMIN → Chuyển hướng về /dashboard
-    if (user.role === "ROLE_ADMIN") {
-      if (pathname !== "/dashboard") {
-        router.replace("/dashboard");
-      }
-      return;
+    // Check path access based on user role
+    let isAllowed = false;
+    if (user.role === "ROLE_USER") {
+      isAllowed = USER_ALLOWED_PATHS.some((path) => pathname.startsWith(path));
+    } else if (user.role === "ROLE_ADMIN") {
+      isAllowed =
+        ADMIN_ADDITIONAL_PATHS.some((path) => pathname.startsWith(path));
     }
 
-    // Kiểm tra nếu user có quyền vào trang này không
-    const isAllowed = USER_ALLOWED_PATHS.some((path) =>
-      pathname.startsWith(path)
-    );
-
-    // Nếu user vào trang không được phép → Chuyển về "/"
+    // Redirect if path is not allowed
     if (!isAllowed) {
       router.replace("/");
     }
   }, [user, pathname, router]);
 
-  // Chờ `user` được xác định để tránh render sai(lộ thông tin)
+  // Wait for user to be determined to prevent incorrect rendering
   if (user === undefined) return null;
-
   return <>{children}</>;
 }
