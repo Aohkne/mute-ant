@@ -1,12 +1,21 @@
+"use client";
+
 import styles from "./Header.module.scss";
 import classNames from "classnames/bind";
-const cx = classNames.bind(styles);
-
 import Link from "next/link";
 import Image from "next/image";
-import { ModeToggle } from "@/components/ui/mode-toggle";
+import { useAppDispatch } from "../../hooks";
+import { logout } from "../../redux/features/auth";
+
+const cx = classNames.bind(styles);
 
 function Header() {
+  const dispatch = useAppDispatch();
+
+  const handleLogout = () => {
+    dispatch(logout());
+  };
+
   return (
     <div className={cx("container", "py-5")}>
       <div className={cx("wrapper", "z-10")}>
@@ -38,10 +47,12 @@ function Header() {
               Blog
             </Link>
           </li>
+          <li className={cx("nav-item")}>
+            <Link className={cx("text-gradient-3")} href="/" onClick={handleLogout}>
+              Logout
+            </Link>
+          </li>
         </ul>
-      </div>
-      <div className={cx("fixed top-0 right-0 p-4")}>
-        <ModeToggle />
       </div>
     </div>
   );
