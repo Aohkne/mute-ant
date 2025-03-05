@@ -64,15 +64,20 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    // ADMiN
-    if (user.role === "ROLE_ADMIN") return;
+    // ADMIN → Chuyển hướng về /dashboard
+    if (user.role === "ROLE_ADMIN") {
+      if (pathname !== "/dashboard") {
+        router.replace("/dashboard");
+      }
+      return;
+    }
 
     // Kiểm tra nếu user có quyền vào trang này không
     const isAllowed = USER_ALLOWED_PATHS.some((path) =>
       pathname.startsWith(path)
     );
 
-    //  Nếu user vào trang không được phép → Chuyển về "/"
+    // Nếu user vào trang không được phép → Chuyển về "/"
     if (!isAllowed) {
       router.replace("/");
     }
