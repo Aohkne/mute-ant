@@ -48,19 +48,21 @@ function Card({ id, img, title, author, description }: CardProps) {
           {author}
         </div>
         <div className={cx("action")}>
-          <Link href={`/blog-detail/${id}`}>
-            <div
-              className={cx(
-                "action-container",
-                "title",
-                "flex",
-                "items-center"
-              )}
-            >
-              <Button className={cx("btn")}>DETAILS</Button>
-              <ChevronRight className={cx("icon")} />
-            </div>
-          </Link>
+          <div className={cx("btn-container")}>
+            <Link href={`/blog-detail/${id}`}>
+              <div
+                className={cx(
+                  "action-container",
+                  "title",
+                  "flex",
+                  "items-center"
+                )}
+              >
+                <Button className={cx("btn")}>DETAILS</Button>
+                <ChevronRight className={cx("icon")} />
+              </div>
+            </Link>
+          </div>
         </div>
       </div>
     </div>

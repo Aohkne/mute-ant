@@ -6,7 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useAppDispatch } from "../../hooks";
 import { logout } from "../../redux/features/auth";
-
+import { ModeToggle } from "@/components/ui/mode-toggle";
 const cx = classNames.bind(styles);
 
 function Header() {
@@ -48,11 +48,14 @@ function Header() {
             </Link>
           </li>
           <li className={cx("nav-item")}>
-            <Link className={cx("text-gradient-3")} href="/" onClick={handleLogout}>
+            <Link className={cx("log-out")} href="/" onClick={handleLogout}>
               Logout
             </Link>
           </li>
         </ul>
+      </div>
+      <div className={cx("fixed top-0 right-0 p-4")}>
+        <ModeToggle />
       </div>
     </div>
   );
